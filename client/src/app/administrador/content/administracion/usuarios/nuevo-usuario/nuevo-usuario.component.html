@@ -1,0 +1,228 @@
+<div class="form-container">
+    <h3 class="form-title">
+        <i class="far fa-address-card"></i>
+        &nbsp;Información personal
+    </h3>
+    <div class="form" [formGroup]="formNewUser">
+        <div class="form-group">
+            <div class="form-control">
+                <label class="form-label" [ngClass]="{'label-on-focus-up':
+                elementHasFocus[0]}" [ngStyle]="animationLabel(formNewUser,'select')">
+                    Tipo de documento
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <select formControlName="document_type_user" name="" id="" class="form-input" (focus)="isFocused(0,formNewUser,'select')"
+                    (focusout)="isFocused(0,formNewUser,'select')">
+                    <option>V- </option>
+                    <option>E- </option>
+                    <option>P- </option>
+                    <option>J- </option>
+                    <option>G- </option>
+                </select>
+            </div>
+            <div class="form-control" 
+            [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewUser,'document_number_user')&&
+            elementHasFocus[1],'input-on-focus-fail':!verifyStyleInput(formNewUser,'document_number_user')}">
+                <label class="form-label" [ngClass]="{'label-on-focus-down':
+                elementHasFocus[1]&&positionLabel[1],
+                'label-on-focus-up':
+                elementHasFocus[1]&&!positionLabel[1]}" [ngStyle]="animationLabel(formNewUser,
+                'document_number_user')">
+                    Número de documento
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <input formControlName="document_number_user" (focus)="isFocused(1,formNewUser,'document_number_user')"
+                    (focusout)="isFocused(1,formNewUser,'document_number_user')" class="form-input"
+                    [ngStyle]="styleForeground(formNewUser,'document_number_user')">
+            </div>
+            <div class="form-control" 
+            [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewUser,'names_user')&&
+            elementHasFocus[2],'input-on-focus-fail':!verifyStyleInput(formNewUser,'names_user')}">
+                <label class="form-label" [ngClass]="{'label-on-focus-down':
+                elementHasFocus[2]&&positionLabel[2],
+                'label-on-focus-up':
+                elementHasFocus[2]&&!positionLabel[2]}" [ngStyle]="animationLabel(formNewUser,
+                'names_user')">
+                    Nombres
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <input formControlName="names_user" (focus)="isFocused(2,formNewUser,'names_user')"
+                    (focusout)="isFocused(2,formNewUser,'names_user')" class="form-input"
+                    [ngStyle]="styleForeground(formNewUser,'names_user')">
+            </div>
+            <div class="form-control" 
+            [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewUser,'last_names_user')&&
+            elementHasFocus[3],'input-on-focus-fail':!verifyStyleInput(formNewUser,'last_names_user')}">
+                <label class="form-label" [ngClass]="{'label-on-focus-down':
+                elementHasFocus[3]&&positionLabel[3],
+                'label-on-focus-up':
+                elementHasFocus[3]&&!positionLabel[3]}" [ngStyle]="animationLabel(formNewUser,
+                'last_names_user')">
+                    Apellidos
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <input formControlName="last_names_user" (focus)="isFocused(3,formNewUser,'last_names_user')"
+                    (focusout)="isFocused(3,formNewUser,'last_names_user')" class="form-input"
+                    [ngStyle]="styleForeground(formNewUser,'last_names_user')">
+            </div>
+            <div class="form-control">
+                <label class="form-label" [ngClass]="{'label-on-focus-up':
+                elementHasFocus[4]}" [ngStyle]="animationLabel(formNewUser,'select')">
+                    Cargo
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <select formControlName="range_user" name="" id="" class="form-input" (focus)="isFocused(4,formNewUser,'select')"
+                    (focusout)="isFocused(4,formNewUser,'select')" (change)="changeRange()">
+                    <option>Administrador</option>
+                    <option>Cajero</option>
+                </select>
+            </div>
+            <div *ngIf="this.formNewUser.get('range_user')?.value.includes('Cajero')" class="form-control">
+                <label class="form-label" [ngClass]="{'label-on-focus-up':
+                elementHasFocus[5]}" [ngStyle]="animationLabel(formNewUser,'select')">
+                    Caja
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <select formControlName="id_register" name="" id="" class="form-input" 
+                    (focus)="isFocused(5,formNewUser,'select')" 
+                    (focusout)="isFocused(5,formNewUser,'select')">
+                    <option *ngFor="let register of registers" value="{{register.id_register}}">{{register.name}}</option>
+                </select>
+            </div>
+            <div class="form-control" 
+            [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewUser,'phone_number_user')&&
+            elementHasFocus[6],'input-on-focus-fail':!verifyStyleInput(formNewUser,'phone_number_user')}">
+                <label class="form-label" [ngClass]="{'label-on-focus-down':
+                elementHasFocus[6]&&positionLabel[6],
+                'label-on-focus-up':
+                elementHasFocus[6]&&!positionLabel[6]}" [ngStyle]="animationLabel(formNewUser,
+                'phone_number_user')">
+                    Télefono
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <input formControlName="phone_number_user" (focus)="isFocused(6,formNewUser,'phone_number_user')"
+                    (focusout)="isFocused(6,formNewUser,'phone_number_user')" class="form-input"
+                    [ngStyle]="styleForeground(formNewUser,'phone_number_user')">
+            </div>
+        </div>
+        <h3 class="form-title">
+            <i class="fas fa-user-friends"></i>
+            &nbsp;Genero
+        </h3>
+        <div class="form-group">
+            <label class="ratio-buttons">
+                <input formControlName="gander_user" type="radio" name="gander_user" value="Masculino" checked> 
+                <i class="fas fa-male fa-fw"></i>Masculino
+            </label>
+            
+        </div>
+        <div class="form-group">
+            <label class="ratio-buttons">
+                <input formControlName="gander_user" type="radio" name="gander_user" value="Femenino" > 
+                <i class="fas fa-female fa-fw"></i>Femenino
+            </label>
+            
+        </div>
+        
+        
+        <h3 class="form-title">
+            <i class="fas fa-user-lock"></i>
+            &nbsp;Información de la cuenta
+        </h3>
+        <div class="form-group">
+            <div class="form-control">
+                <label class="form-label" [ngClass]="{'label-on-focus-up':
+                elementHasFocus[7]}" [ngStyle]="animationLabel(formNewUser,'select')">
+                    Estado de la cuenta
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <select formControlName="state_user" name="" id="" class="form-input" (focus)="isFocused(7,formNewUser,'select')"
+                    (focusout)="isFocused(7,formNewUser,'select')">
+                    <option>Habilitada</option>
+                    <option>Deshabilitada</option>
+                </select>
+            </div>
+            <div class="form-control" 
+            [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewUser,'email_user')&&
+            elementHasFocus[8],'input-on-focus-fail':!verifyStyleInput(formNewUser,'email_user')}">
+                <label class="form-label" [ngClass]="{'label-on-focus-down':
+                elementHasFocus[8]&&positionLabel[8],
+                'label-on-focus-up':
+                elementHasFocus[8]&&!positionLabel[8]}" [ngStyle]="animationLabel(formNewUser,
+                'email_user')">3a
+                    Email
+                </label>
+                <input formControlName="email_user" (focus)="isFocused(8,formNewUser,'email_user')"
+                    (focusout)="isFocused(8,formNewUser,'email_user')" class="form-input"
+                    [ngStyle]="styleForeground(formNewUser,'email_user')">
+            </div>
+            <div class="form-control" 
+            [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewUser,'password_user')&&
+            elementHasFocus[9],'input-on-focus-fail':!verifyStyleInput(formNewUser,'password_user')}">
+                <label class="form-label" [ngClass]="{'label-on-focus-down':
+                elementHasFocus[9]&&positionLabel[9],
+                'label-on-focus-up':
+                elementHasFocus[9]&&!positionLabel[9]}" [ngStyle]="animationLabel(formNewUser,
+                'password_user')">
+                    Contraseña
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <input type="password" formControlName="password_user" (focus)="isFocused(9,formNewUser,'password_user')"
+                    (focusout)="isFocused(9,formNewUser,'password_user')" class="form-input"
+                    [ngStyle]="styleForeground(formNewUser,'password_user')">
+            </div>
+            <div class="form-control" 
+            [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewUser,'repeat_password_user')&&
+            elementHasFocus[10],'input-on-focus-fail':!verifyStyleInput(formNewUser,'repeat_password_user')}">
+                <label class="form-label" [ngClass]="{'label-on-focus-down':
+                elementHasFocus[10]&&positionLabel[10],
+                'label-on-focus-up':
+                elementHasFocus[10]&&!positionLabel[10]}" [ngStyle]="animationLabel(formNewUser,
+                'repeat_password_user')">
+                    Repetir contraseña
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <input type="password" formControlName="repeat_password_user" (focus)="isFocused(10,formNewUser,'repeat_password_user')"
+                    (focusout)="isFocused(10,formNewUser,'repeat_password_user')" class="form-input"
+                    [ngStyle]="styleForeground(formNewUser,'repeat_password_user')">
+            </div>
+            <div *ngIf="formNewUser.get('repeat_password_user')?.errors?.['notEquals'] ||
+            formNewUser.get('password_user')?.errors?.['notEquals'] " class="alert">
+                Las contraseñas no coinciden</div>
+
+        </div>
+        <div class="form-actions">
+            <div *ngIf="this.routes.url.includes('nuevo')">
+                <button class="form-button" [ngClass]="{'btn-save':formNewUser.valid}"
+                (click)="openModal(formNewUser)">
+                    <i class="far fa-save"></i>
+                    &nbsp;&nbsp;ACEPTAR</button>
+
+                <button class="form-button btn-clean" (click)="clean()">
+                    <i class="fas fa-paint-roller"></i>
+                    &nbsp;&nbsp;LIMPIAR</button>
+            </div>
+            <div *ngIf="this.routes.url.includes('actualizar')">
+                <button class="form-button" [ngClass]="{'btn-update':formNewUser.valid}"
+                    (click)="openModal(formNewUser)">
+                    <i class="fa fa-arrows-rotate"></i>
+                    &nbsp;&nbsp;ACTUALIZAR</button>
+            </div>
+
+        </div>
+        <p class="form-info">Los campos marcados con <i class="fab fa-font-awesome-alt"></i> 
+            son obligatorios</p>
+    </div>
+</div>
+<dialog class="dialog" #popup>
+    <i class="fa fa-arrows-rotate"></i>
+    <h3>¿Estas seguro?</h3>
+    <p>Lois datos seran guardados en el sistema</p>
+    <div>
+        <button class="form-button btn-save" (click)="acept()">
+            &nbsp;&nbsp;ACEPTAR</button>
+        <button *ngIf="this.popUp?.nativeElement.children[1].textContent === '¿Estás seguro?'"
+         class="form-button btn-save" (click)="cancel(popUp)">
+            &nbsp;&nbsp;CANCELAR</button>
+    </div>
+</dialog>

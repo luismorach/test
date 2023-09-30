@@ -1,0 +1,214 @@
+<div class="form-container">
+    <h3 class="form-title">
+        <i class="far fa-address-card"></i>
+        &nbsp;Información personal
+    </h3>
+    <div class="form" [formGroup]="formNewClient">
+        <div class="form-group">
+           <div class="form-control">
+                <label class="form-label"
+                [ngClass]="{'label-on-focus-up': elementHasFocus[0]}"
+                [ngStyle]="animationLabel(formNewClient,'select')">
+                    Tipo de documento
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <select formControlName="document_type_client"  name="" id="" class="form-input" 
+                (focus)="isFocused(0,formNewClient,'select')"
+                (focusout)="isFocused(0,formNewClient,'select')">
+                    <option>Habilitada</option>
+                    <option>Deshabilitada</option>
+                </select>
+            </div>
+            <div class="form-control"
+            [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewClient,'document_number_client')&&
+            elementHasFocus[1],'input-on-focus-fail':!verifyStyleInput(formNewClient,'document_number_client')}">
+                <label class="form-label" 
+                [ngClass]="{'label-on-focus-down':
+                elementHasFocus[1]&&positionLabel[1],
+                'label-on-focus-up':
+                elementHasFocus[1]&&!positionLabel[1]}"
+                [ngStyle]="animationLabel(formNewClient,
+                'document_number_client')">
+                    Número de documento
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <input formControlName="document_number_client" autofocus
+                (focus)="isFocused(1,formNewClient,'document_number_client')"
+                (focusout)="isFocused(1,formNewClient,'document_number_client')"
+                class="form-input" [ngStyle]="styleForeground(formNewClient,'document_number_client')" >
+            </div>
+            <div class="form-control" 
+            [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewClient,'names_client')&&
+            elementHasFocus[2],'input-on-focus-fail':!verifyStyleInput(formNewClient,'names_client')}">
+                <label class="form-label" 
+                [ngClass]="{'label-on-focus-down':
+                elementHasFocus[2]&&positionLabel[2],
+                'label-on-focus-up':
+                elementHasFocus[2]&&!positionLabel[2]}"
+                [ngStyle]="animationLabel(formNewClient,
+                'names_client')">
+                    Nombres
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <input formControlName="names_client"
+                (focus)="isFocused(2,formNewClient,'names_client')"
+                (focusout)="isFocused(2,formNewClient,'names_client')"
+                class="form-input" [ngStyle]="styleForeground(formNewClient,'names_client')">
+            </div>
+            <div class="form-control" 
+            [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewClient,'last_names_client')&&
+            elementHasFocus[3],'input-on-focus-fail':!verifyStyleInput(formNewClient,'last_names_client')}">
+                <label class="form-label" 
+                [ngClass]="{'label-on-focus-down':
+                elementHasFocus[3]&&positionLabel[3],
+                'label-on-focus-up':
+                elementHasFocus[3]&&!positionLabel[3]}"
+                [ngStyle]="animationLabel(formNewClient,
+                'last_names_client')">
+                    Apellidos
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <input formControlName="last_names_client"
+                (focus)="isFocused(3,formNewClient,'last_names_client')"
+                (focusout)="isFocused(3,formNewClient,'last_names_client')"
+                class="form-input" [ngStyle]="styleForeground(formNewClient,'last_names_client')">
+            </div>
+        </div>
+        <h3 class="form-title">
+            <i class="fas fa-map-marked-alt"></i>
+            &nbsp;Información de residencia
+        </h3>
+        <div class="form-group">
+            <div class="form-control"
+            [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewClient,'state_client')&&
+            elementHasFocus[4],'input-on-focus-fail':!verifyStyleInput(formNewClient,'state_client')}">
+                <label class="form-label" 
+                [ngClass]="{'label-on-focus-down':
+                elementHasFocus[4]&&positionLabel[4],
+                'label-on-focus-up':
+                elementHasFocus[4]&&!positionLabel[4]}"
+                [ngStyle]="animationLabel(formNewClient,
+                'state_client')">
+                    Estado, provincia o departamento
+                </label>
+                <input formControlName="state_client"
+                (focus)="isFocused(4,formNewClient,'state_client')"
+                (focusout)="isFocused(4,formNewClient,'state_client')"
+                class="form-input" [ngStyle]="styleForeground(formNewClient,'state_client')">
+            </div>
+            <div class="form-control"
+            [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewClient,'city_client')&&
+            elementHasFocus[5],'input-on-focus-fail':!verifyStyleInput(formNewClient,'city_client')}">
+                <label class="form-label" 
+                [ngClass]="{'label-on-focus-down':
+                elementHasFocus[5]&&positionLabel[5],
+                'label-on-focus-up':
+                elementHasFocus[5]&&!positionLabel[5]}"
+                [ngStyle]="animationLabel(formNewClient,
+                'city_client')">
+                    Ciudad o pueblo
+                </label>
+                <input formControlName="city_client"
+                (focus)="isFocused(5,formNewClient,'city_client')"
+                (focusout)="isFocused(5,formNewClient,'city_client')"
+                class="form-input" [ngStyle]="styleForeground(formNewClient,'city_client')">
+            </div>
+            <div class="form-control"
+            [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewClient,'street_client')&&
+            elementHasFocus[6],'input-on-focus-fail':!verifyStyleInput(formNewClient,'street_client')}">
+                <label class="form-label" 
+                [ngClass]="{'label-on-focus-down':
+                elementHasFocus[6]&&positionLabel[6],
+                'label-on-focus-up':
+                elementHasFocus[6]&&!positionLabel[6]}"
+                [ngStyle]="animationLabel(formNewClient,
+                'street_client')">
+                    Calle o direccion de casa
+                </label>
+                <input formControlName="street_client"
+                (focus)="isFocused(6,formNewClient,'street_client')"
+                (focusout)="isFocused(6,formNewClient,'street_client')"
+                class="form-input" [ngStyle]="styleForeground(formNewClient,'street_client')">
+            </div>
+        </div>
+
+        <h3 class="form-title">
+            <i class="far fa-address-book"></i>
+            &nbsp;Información de contacto
+        </h3>
+
+        <div class="form-group">
+            <div class="form-control"
+            [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewClient,'phone_number_client')&&
+            elementHasFocus[7],'input-on-focus-fail':!verifyStyleInput(formNewClient,'phone_number_client')}">
+                <label class="form-label" 
+                [ngClass]="{'label-on-focus-down':
+                elementHasFocus[7]&&positionLabel[7],
+                'label-on-focus-up':
+                elementHasFocus[7]&&!positionLabel[7]}"
+                [ngStyle]="animationLabel(formNewClient,
+                'phone_number_client')">
+                    Télefono
+                </label>
+                <input formControlName="phone_number_client"
+                (focus)="isFocused(7,formNewClient,'phone_number_client')"
+                (focusout)="isFocused(7,formNewClient,'phone_number_client')"
+                class="form-input" [ngStyle]="styleForeground(formNewClient,'phone_number_client')">
+            </div>
+            <div class="form-control"
+            [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewClient,'email_client')&&
+            elementHasFocus[8],'input-on-focus-fail':!verifyStyleInput(formNewClient,'email_client')}">
+                <label class="form-label" 
+                [ngClass]="{'label-on-focus-down':
+                elementHasFocus[8]&&positionLabel[8],
+                'label-on-focus-up':
+                elementHasFocus[8]&&!positionLabel[8]}"
+                [ngStyle]="animationLabel(formNewClient,
+                'email_client')">
+                    Email_client
+                </label>
+                <input formControlName="email_client"
+                (focus)="isFocused(8,formNewClient,'email_client')"
+                (focusout)="isFocused(8,formNewClient,'email_client')"
+                class="form-input" [ngStyle]="styleForeground(formNewClient,'email_client')">
+            </div>
+            
+            
+        </div>
+        <div class="form-actions">
+            <div *ngIf="this.routes.url.includes('nuevo') ||this.routes.url.includes('venta') ">
+                <button class="form-button" [ngClass]="{'btn-save':formNewClient.valid}"
+                (click)="openModal(formNewClient)">
+                    <i class="far fa-save"></i>
+                    &nbsp;&nbsp;ACEPTAR</button>
+
+                <button class="form-button btn-clean" (click)="clean()">
+                    <i class="fas fa-paint-roller"></i>
+                    &nbsp;&nbsp;LIMPIAR</button>
+            </div>
+            <div *ngIf="this.routes.url.includes('actualizar')">
+                <button class="form-button" [ngClass]="{'btn-update':formNewClient.valid}"
+                    (click)="openModal(formNewClient)">
+                    <i class="fa fa-arrows-rotate"></i>
+                    &nbsp;&nbsp;ACTUALIZAR</button>
+            </div>
+
+            
+        </div>
+        <p class="form-info">Los campos marcados con <i class="fab fa-font-awesome-alt"></i> 
+            son obligatorios</p>
+    </div>
+</div>
+<dialog class="dialog" #popup>
+    <i class="fa fa-arrows-rotate"></i>
+    <h3>¿Estas seguro?</h3>
+    <p>Lois datos seran guardados en el sistema</p>
+    <div>
+        <button class="form-button btn-save" (click)="acept()">
+            &nbsp;&nbsp;ACEPTAR</button>
+        <button *ngIf="this.popUp?.nativeElement.children[1].textContent === '¿Estás seguro?'"
+         class="form-button btn-save" (click)="cancel(popUp)">
+            &nbsp;&nbsp;CANCELAR</button>
+    </div>
+</dialog>
+

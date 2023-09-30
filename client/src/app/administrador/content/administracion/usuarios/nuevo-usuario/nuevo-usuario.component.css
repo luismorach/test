@@ -1,0 +1,14 @@
+.form-group {
+    flex-wrap: wrap;
+  }
+  .form-control {
+    width: 40%;
+    min-width: 200px;
+  }
+  .alert{
+    width: 100%;
+    color:red;
+    margin:0px;
+    padding: 0px;
+    text-align: center;
+  }

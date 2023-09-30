@@ -1,0 +1,125 @@
+<div *ngIf="criterio===undefined">
+    <strong>Fecha: </strong>{{initialDate|date:'dd/MM/yyyy'}}  <strong>al</strong>  {{endDate|date:'dd/MM/yyyy'}}
+</div>
+<div *ngIf="criterio!==undefined">
+    <strong>Código de barra del producto:</strong> {{criterio}}
+</div>
+<div class="table-container">
+    <div class="table-title">
+        <h6>Kardex general</h6>
+    </div>
+    <div class="table-body">
+        <div class="search-pagination" [formGroup]="tableSearch">
+            <div class="dataTable-length">
+                <label>Mostrar
+                    <select name="dataTable_length" formControlName="numberRows" class="custom-select"
+                        (change)="createPages(tableSearch,currentData,kardex)">
+                        <option value="2">2</option>
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select> entradas</label>
+            </div>
+
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th colspan="3"></th>
+                        <th colspan="3">Entradas</th>
+                        <th colspan="3">salidas</th>
+                        <th colspan="3">saldo</th>
+                    </tr>
+
+                    <tr>
+                        <th>N°</th>
+                        <th>Detalle</th>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Costo</th>
+                        <th>Total</th>
+                        <th>Cantidad</th>
+                        <th>Costo</th>
+                        <th>Total</th>
+                        <th>Cantidad</th>
+                        <th>Costo</th>
+                        <th>Total</th>
+                    </tr>
+
+
+
+                </thead>
+
+                <tbody *ngIf="mainCoin!==undefined">
+                    <tr *ngFor="let data of kardex | 
+                    tableFilter:getValuesToPipe(tableSearch);let i=index">
+                        <td>{{i+1}}</td>
+                        <td>{{data.type}}</td>
+                        <td>{{products[i].name}} {{products[i].mark}} {{products[i].model}}</td>
+                        <td *ngIf="data.type==='compra' || data.type==='Devolución de compra'"
+                            [ngClass]="{'repayment':data.type==='Devolución de compra'}">
+                            <i *ngIf="data.type==='Devolución de compra'">-</i> {{data.quantity_products}}
+                        </td>
+                        <td *ngIf="data.type==='compra' || data.type==='Devolución de compra' "
+                            [ngClass]="{'repayment':data.type==='Devolución de compra'}">
+                            {{data.price|currency:data.coin_kardex+''}}
+                            <i *ngIf="data.coin_kardex!=mainCoin.symbol"> /
+                                {{comunicatorSvc.converterToMainCoin(data.price,data.exchange)|currency:mainCoin.symbol+'
+                                '}}</i>
+                        </td>
+                        <td *ngIf="data.type==='compra' || data.type==='Devolución de compra' "
+                            [ngClass]="{'repayment':data.type==='Devolución de compra'}">
+                            {{data.quantity_products*data.price|currency:data.coin_kardex+''}}
+                            <i *ngIf="data.coin_kardex!=mainCoin.symbol"> /
+                                {{comunicatorSvc.converterToMainCoin(data.quantity_products*data.price,data.exchange)|
+                                    currency:mainCoin.symbol+''}}</i>
+                        </td>
+                        <td *ngIf="data.type==='compra' || data.type==='Devolución de compra' "></td>
+                        <td *ngIf="data.type==='compra' || data.type==='Devolución de compra' "></td>
+                        <td *ngIf="data.type==='compra' || data.type==='Devolución de compra' "></td>
+                        <td *ngIf="data.type==='venta' || data.type==='Devolución de venta' "></td>
+                        <td *ngIf="data.type==='venta'|| data.type==='Devolución de venta'"></td>
+                        <td *ngIf="data.type==='venta'|| data.type==='Devolución de venta'"></td>
+                        <td *ngIf="data.type==='venta'|| data.type==='Devolución de venta'"
+                            [ngClass]="{'repayment':data.type==='Devolución de venta'}">
+                            <i *ngIf="data.type==='Devolución de venta'">-</i>{{data.quantity_products}}
+                        </td>
+                        <td *ngIf="data.type==='venta'|| data.type==='Devolución de venta'"
+                            [ngClass]="{'repayment':data.type==='Devolución de venta'}">
+                            {{data.price|currency:data.coin_kardex+''}}</td>
+                        <td *ngIf="data.type==='Devolución de venta'"
+                            [ngClass]="{'repayment':data.type==='Devolución de venta'}">
+                            {{data.quantity_products*data.price|currency:data.coin_kardex+''}}</td>
+                         <td *ngIf="data.type==='venta'">{{data.total}}</td>   
+                        <td>{{data.exist}}</td>
+                        <td>{{data.weighted_averages_sell|currency:mainCoin.symbol+' '}}</td>
+                        <td>{{data.exist*data.weighted_averages_sell|currency:mainCoin.symbol+' '}}</td>
+                        <td class="icon update" (click)="redirectToDetallesKardex(data)"><i class="fas fa-pallet fa-fw"></i></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="search-pagination">
+            <div class="dataTables_info" #dataTables_info>
+            </div>
+            <div class="pagination-responsive">
+                <ul class="pagination" #pagination>
+                    <li class="previous page-item dataTables_info items"
+                        [class.disable]="getValuesToPipe(tableSearch).indexCurrentPage===0"
+                        [class.active]="getValuesToPipe(tableSearch).indexCurrentPage!=0"
+                        (click)="previousPage(tableSearch,currentData,kardex)">
+                        Previous
+                    </li>
+
+                    <li class="next dataTables_info active items" #next
+                        [class.disable]="getValuesToPipe(tableSearch).indexCurrentPage===numberPages-1"
+                        (click)="nextPage(tableSearch,currentData,kardex)">
+                        Next
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

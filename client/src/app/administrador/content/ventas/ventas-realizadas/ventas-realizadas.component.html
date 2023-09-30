@@ -1,0 +1,92 @@
+<div *ngIf="criterio===undefined">
+    <strong>Fecha: </strong>{{initialDate|date:'dd/MM/yyyy'}}  <strong>al</strong>  {{endDate|date:'dd/MM/yyyy'}}
+</div>
+<div *ngIf="criterio!==undefined">
+    <strong>Criterio de busqueda:</strong> {{criterio}}
+</div>
+<div class="table-container">
+    <div class="table-title">
+        <h6>Ventas realizadas</h6>
+    </div>
+
+    <div class="table-body">
+        <div class="search-pagination" [formGroup]="tableSearch">
+            <div class="dataTable-length">
+                <label>Mostrar
+                    <select name="dataTable_length" formControlName="numberRows" class="custom-select"
+                        (change)="createPages(tableSearch,currentData,sells)">
+                        <option value="2">2</option>
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select> entradas</label>
+            </div>
+
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>N° factura</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Cliente</th>
+                        <th>Vendedor</th>
+                        <th>Total</th>
+                        <td>Estado</td>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let sell of sells | 
+                    tableFilter:getValuesToPipe(tableSearch);let i=index">
+                        <td>{{i+1}}</td>
+                        <td>{{sell.id_sell}}</td>
+                        <td>{{sell.date|date:'dd/MM/yyyy'}}</td>
+                        <td>{{sell.time|date:'HH:mm:ss aaaa'}}</td>
+                        <td>{{clients[i].names_client}} {{clients[i].last_names_client}}</td>
+                        <td>{{user[i].names_user}} {{user[i].last_names_user}}</td>
+                        <td>{{sell.total_sell|currency:sell.coin+' '}}</td>
+                        <td>{{sell.state}}</td>
+                        <td class="icon update" (click)="redirectToDetallesVenta(sell)"><i class="fas fa-cart-plus fa-fw"></i></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="search-pagination">
+            <div class="dataTables_info" #dataTables_info>
+            </div>
+            <div class="pagination-responsive">
+                <ul class="pagination" #pagination>
+                    <li class="previous page-item dataTables_info items"
+                        [class.disable]="getValuesToPipe(tableSearch).indexCurrentPage===0"
+                        [class.active]="getValuesToPipe(tableSearch).indexCurrentPage!=0"
+                        (click)="previousPage(tableSearch,currentData,sells)">
+                        Previous
+                    </li>
+
+                    <li class="next dataTables_info active items" #next
+                        [class.disable]="getValuesToPipe(tableSearch).indexCurrentPage===numberPages-1"
+                        (click)="nextPage(tableSearch,currentData,sells)">
+                        Next
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<dialog class="dialog" #popup>
+    <i class="fa-regular fa-circle-question"></i>
+    <h3>¿Estás seguro?</h3>
+    <p>Los datos seran guardados en el sistema</p>
+    <div>
+        <button class="form-button btn-save" (click)="cancel(popUp)">
+            &nbsp;&nbsp;ACEPTAR</button>
+        <button *ngIf="this.popUp?.nativeElement.children[1].textContent === '¿Estás seguro?'"
+            class="form-button btn-cancel" (click)="cancel(popUp)">
+            &nbsp;&nbsp;CANCELAR</button>
+    </div>
+</dialog>

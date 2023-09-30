@@ -1,0 +1,400 @@
+<div class="main-container">
+    <div class="left-container">
+        <p>Ingrese el código de barras del producto y luego haga clic en
+            <strong>“Verificar producto”</strong>
+            para cargar los datos en caso de que el producto ya este registrado, en caso contrario
+            se cargará el formulario para registrar un nuevo producto.
+        </p>
+        <div class="addSell">
+            <div class="form" [formGroup]="formNewSell">
+                <div class="form-group">
+                    <button class="btn enable" (click)="searchProduct()">
+                        <i class="fa fa-search"></i>
+                        &nbsp;&nbsp;BUSCAR PRODUCTO
+                    </button>
+                    <div class="form-control" [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewSell,'barcode')&&
+                    elementHasFocus[0],'input-on-focus-fail':!verifyStyleInput(formNewSell,'barcode')}">
+                        <label class="form-label" [ngClass]="{'label-on-focus-down':
+            elementHasFocus[0]&&positionLabel[0],
+            'label-on-focus-up':
+            elementHasFocus[0]&&!positionLabel[0]}" [ngStyle]="animationLabel(formNewSell,
+            'barcode')">
+                            Código de barra
+                        </label>
+                        <input formControlName="barcode" (focus)="isFocused(0,formNewSell,'barcode')"
+                            (focusout)="isFocused(0,formNewSell,'barcode')" class="form-input"
+                            [ngStyle]="styleForeground(formNewSell,'barcode')">
+                    </div>
+                    <div class="form-control" [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewSell,'productQuantity')&&
+                    elementHasFocus[1],'input-on-focus-fail':!verifyStyleInput(formNewSell,'productQuantity')}">
+                        <label class="form-label" [ngClass]="{'label-on-focus-down':
+                elementHasFocus[1]&&positionLabel[1],
+                'label-on-focus-up':
+                elementHasFocus[1]&&!positionLabel[1]}" [ngStyle]="animationLabel(formNewSell, 'productQuantity')">
+                            Cantidad del producto
+                        </label>
+                        <input formControlName="productQuantity" (focus)="isFocused(1,formNewSell,'productQuantity')"
+                            (focusout)="isFocused(1,formNewSell,'productQuantity')" class="form-input"
+                            [ngStyle]="styleForeground(formNewSell,'productQuantity')">
+                    </div>
+
+                    <button class="btn" (click)="addProduct()" [ngClass]="{'enable':formNewSell.get('barcode')?.valid}">
+                        <i class="far fa-check-circle"></i>
+                        &nbsp;&nbsp;VERIFICAR PRODUCTO
+                    </button>
+                </div>
+
+
+            </div>
+        </div>
+        <div class="table-container">
+            <div class="table-title">
+                <h6>Productos añadidos a la venta</h6>
+            </div>
+            <div class="table-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>N°</th>
+                                <th>Código de barra</th>
+                                <th>Producto</th>
+                                <th>Existentes</th>
+                                <th>Cantidad</th>
+                                <th>Precio de venta</th>
+                                <th>Descuento</th>
+                                <th>Valor de descuento</th>
+                                <th>IVA</th>
+                                <th>Sub total</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody #tab>
+                            <tr *ngFor="let product of products; let i=index">
+                                <td>{{i+1}}</td>
+                                <td>{{product.barcode}}</td>
+                                <td>{{product.name}}&nbsp;{{product.mark}}&nbsp;{{product.model}}&nbsp;</td>
+                                <td>{{product.exist_quantity}}</td>
+                                <td>
+                                    <input currencyMask class="input-table"
+                                        [(ngModel)]="sellProducts[i].quantity_products"
+                                        [options]="{ prefix: '',precision:0,align:'left' }">
+                                </td>
+                                <td>{{comunicatorSvc.converter(product.sell_price,coinSelected)|
+                                    currency:this.formNewSell.get('coin')?.value+' '}}</td>
+                                <td>{{product.discount|percent:'2.2-2'}}</td>
+                                <td>{{comunicatorSvc.converter(product.discount*product.sell_price,coinSelected)|
+                                    currency:this.formNewSell.get('coin')?.value+' '}}
+                                </td>
+                                <td>{{product.impuest|percent:'2.2-2'}}</td>
+                                <td> {{calcularSubtotal(product,i) |currency:this.formNewSell.get('coin')?.value+' '}}</td>
+                                <td class="icon" (click)="openModalToDelete(); indexElementToDelete=i">
+                                    <i class="fa fa-trash-can delete"></i>
+                                </td>
+                            </tr>
+                            <tr *ngIf="products.length>0">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><strong>Total</strong></td>
+                                <td>{{calcularTotal()|currency:this.formNewSell.get('coin')?.value+' '}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="right-container">
+        <h3>DATOS DE LA VENTA</h3>
+        <div class="form" [formGroup]="formNewSell">
+            <div class="form-group">
+
+                <div class="form-control" [ngClass]="{'input-on-focus':elementHasFocus[3]}">
+                    <label class="form-label label-on-focus-up" [ngStyle]="{'color':'#676d74'}">
+                        Fecha
+                    </label>
+                    <p>{{date|date:'dd/MM/yyyy'}}</p>
+                </div>
+
+
+                <div class="form-control" [ngClass]="{'input-on-focus':elementHasFocus[5]}">
+                    <label class="form-label label-on-focus-up" [ngStyle]="{'color':'#676d74'}">
+                        Caja
+                    </label>
+                    <p>la caja</p>
+                </div>
+                <div class="form-control">
+                    <label class="form-label" [ngClass]="{'label-on-focus-up':
+                    elementHasFocus[6]}" [ngStyle]="animationLabel(formNewSell,'select')">
+                        seleccione la moneda
+                        <i class="fab fa-font-awesome-alt"></i>
+                    </label>
+                    <select formControlName="coin" class="form-input" (change)="selectMoneda()"
+                        (focus)="isFocused(6,formNewSell,'select')" (focusout)="isFocused(6,formNewSell,'select')">
+                        <option *ngFor="let coin of coins" value="{{coin.symbol}}">{{coin.name}}</option>
+                    </select>
+                </div>
+                <div class="form-control">
+                    <label class="form-label" [ngClass]="{'label-on-focus-up':
+                    elementHasFocus[7]}" [ngStyle]="animationLabel(formNewSell,'select')">
+                        Cliente
+                        <i class="fab fa-font-awesome-alt"></i>
+                    </label>
+                    <select formControlName="client" class="form-input" (focus)="isFocused(7,formNewSell,'select')"
+                        (focusout)="isFocused(7,formNewSell,'select')">
+                        <option *ngFor="let cliente of clientes" value="{{cliente.id_client}}">
+                            {{cliente.names_client}}</option>
+                    </select>
+                    <i class="fas fa-user-plus add" (click)="open()"></i>
+                </div>
+            </div>
+            <p class="form-title"> Tipo de pago</p>
+            <div class="form-group">
+                <label class="ratio-buttons">
+                    <input type="radio" formControlName="type_sell" value="Contado" checked>
+                    &nbsp;<i class="fas fa-money-bill-alt"></i>&nbsp;Contado
+                </label>
+            </div>
+            <div class="form-group">
+                <label class="ratio-buttons">
+                    <input type="radio" formControlName="type_sell" value="Crédito">
+                    &nbsp;<i class="fab fa-cc-visa"></i>&nbsp;Crédito
+                </label>
+            </div>
+            <div class="form-group">
+
+                <div class="form-control" [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewSell,'discount')&&
+                elementHasFocus[8],'input-on-focus-fail':!verifyStyleInput(formNewSell,'discount')}">
+                    <label class="form-label" [ngClass]="{'label-on-focus-down':
+                elementHasFocus[8]&&positionLabel[8],
+                'label-on-focus-up':
+                elementHasFocus[8]&&!positionLabel[8]}" [ngStyle]="animationLabel(formNewSell, 'discount')">
+                        Descuento (%)
+                    </label>
+                    <input formControlName="discount" (focus)="isFocused(8,formNewSell,'discount')"
+                        (focusout)="isFocused(8,formNewSell,'discount')" class="form-input"
+                        [ngStyle]="styleForeground(formNewSell,'discount')" (keypress)="validate($event,false)">
+                </div>
+            </div>
+        </div>
+        <div class="total">
+            <p>sub Total</p>
+            <h4>+ {{calcularTotal()|currency:this.formNewSell.get('coin')?.value+' '}}</h4>
+        </div>
+        <div class="total">
+            <p>IVA</p>
+            <h4> + {{calcularImpuestoVenta()|currency:this.formNewSell.get('coin')?.value+' '}} </h4>
+        </div>
+        <div class="total">
+            <p>Descuento</p>
+            <h4> - {{calcularDescuentoVenta()|currency:this.formNewSell.get('coin')?.value+' '}} </h4>
+        </div>
+        <div class="line"></div>
+        <div class="total">
+            <p>Total</p>
+            <h4> {{total()|currency:this.formNewSell.get('coin')?.value+' '}} </h4>
+        </div>
+
+
+        <button title="{{validarVenta().msj}}" class="form-button" (click)="agregarPago()"
+            [ngClass]="{'btn-save':validarVenta().isValid}">
+            <i class="far fa-save"></i>
+            &nbsp;&nbsp;GUARDAR VENTA</button>
+
+    </div>
+    <dialog class="dialog" #popup>
+        <i class="fa-regular fa-circle-question"></i>
+        <h3>¿Estas seguro?</h3>
+        <p>Lois datos seran guardados en el sistema</p>
+        <div>
+            <button class="form-button btn-save" (click)="acept(0)">
+                &nbsp;&nbsp;ACEPTAR</button>
+            <button *ngIf="this.popUp?.nativeElement.children[1].textContent === '¿Estás seguro?'"
+                class="form-button btn-cancel" (click)="cancel(popUp)">
+                &nbsp;&nbsp;CANCELAR</button>
+        </div>
+    </dialog>
+    <dialog class=" list-product" #searchProducts>
+        <div class="container">
+            <div class="header">
+                <h2 class="title">Agregar Productos</h2>
+                <button class="btn-cerrar-dialog" (click)="cancel(search)">x</button>
+            </div>
+            <div class="scroll  table-container">
+                <div class="table-title">
+                    <h6>lista de productos</h6>
+
+                </div>
+                <div class="table-body">
+                    <div class="search-pagination" [formGroup]="tableSearch">
+                        <div class="dataTable-filter">
+                            <label>Buscar:
+                                <input  autofocus formControlName="search" class="input-search dataTable-filter">
+                            </label>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>N°</th>
+                                    <th>código de barra</th>
+                                    <th>producto</th>
+                                    <th>Existentes</th>
+                                    <th>Precio</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                            <tbody #rows>
+                                <tr *ngFor="let product of listProducts| 
+                                tableFilter:{ search: tableSearch.get('search')?.value,pagination:false};let i=index">
+                                    <td>{{i+1}}</td>
+                                    <td>{{product.barcode}}</td>
+                                    <td>{{product.name}} {{product.mark}} {{product.model}}</td>
+                                    <td>{{product.exist_quantity}}</td>
+                                    <td>{{product.sell_price}}</td>
+                                    <td class="icon icon-add-product" (click)="addQuantity(product)">
+                                        <i class="fas fa-plus-circle"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="search-pagination">
+                        <div class="dataTables_info" #dataTables_info>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </dialog>
+    <dialog #quantity class="quantity">
+        <div class="header">
+            <h2 class="title">Agregar cantidad del producto</h2>
+            <button class="btn-cerrar-dialog" (click)="cancel(quantityProduct)">x</button>
+        </div>
+        <div class="form" [formGroup]="formNewSell">
+            <div class="form-control" [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewSell,'productQuantityBySearch')&&
+        elementHasFocus[9],'input-on-focus-fail':!verifyStyleInput(formNewSell,'productQuantityBySearch')}">
+                <label class="form-label" [ngClass]="{'label-on-focus-down':
+elementHasFocus[9]&&positionLabel[9],
+'label-on-focus-up':
+elementHasFocus[9]&&!positionLabel[9]}" [ngStyle]="animationLabel(formNewSell,
+'productQuantityBySearch')">
+                    Cantidad
+                </label>
+                <input autofocus formControlName="productQuantityBySearch"
+                    (focus)="isFocused(9,formNewSell,'productQuantityBySearch')"
+                    (focusout)="isFocused(9,formNewSell,'productQuantityBySearch')" class="form-input"
+                    [ngStyle]="styleForeground(formNewSell,'productQuantityBySearch')"
+                    (keypress)="validate($event,false)">
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="form-button"
+                [ngClass]="{'btn-save':formNewSell.get('productQuantityBySearch')?.value.length>0}"
+                (click)="addProductBySearch(product)">
+                &nbsp;&nbsp;ACEPTAR</button>
+            <button class="form-button btn-cancel" (click)="cancel(quantityProduct)">
+                &nbsp;&nbsp;CANCELAR</button>
+        </div>
+    </dialog>
+    <dialog #client class="newClient">
+        <div class="header">
+            <h2 class="title">Agregar Cliente</h2>
+            <button class="btn-cerrar-dialog" (click)="cancel(cliente)">x</button>
+        </div>
+        <app-nuevo-cliente (messageEvent)="receiveMessage($event)"></app-nuevo-cliente>
+    </dialog>
+    <dialog #pay class="pay">
+        <div class="header">
+            <h2 class="title">Realizar pago de venta</h2>
+            <button class="btn-cerrar-dialog" (click)="cancel(pago)">x</button>
+
+        </div>
+        <div class="sub-header">
+            <h3>Total a pagar: {{this.comunicatorSvc.converter(total(),coinPay)|
+                currency:this.formNewPay.get('coin')?.value+' '}}</h3>
+            <h3 *ngIf="sell!==undefined">Pagado: {{this.comunicatorSvc.converter(sell.total_pay,coinPay)|
+                currency:this.formNewPay.get('coin')?.value+' '}}</h3>
+        </div>
+        <div class="form" [formGroup]="formNewPay">
+            <div class="form-group">
+                <div class="form-control">
+                    <label class="form-label" [ngClass]="{'label-on-focus-up':
+                elementHasFocus[10]}" [ngStyle]="animationLabel(formNewPay,'select')">
+                        Tipo de pago
+                        <i class="fab fa-font-awesome-alt"></i>
+                    </label>
+                    <select formControlName="type" class="form-input" (focus)="isFocused(10,formNewPay,'select')"
+                        (focusout)="isFocused(10,formNewPay,'select')">
+                        <option>Transacción eléctronica</option>
+                        <option>Efectivo</option>
+                    </select>
+                </div>
+                <div class="form-control">
+                    <label class="form-label" [ngClass]="{'label-on-focus-up':
+                elementHasFocus[11]}" [ngStyle]="animationLabel(formNewPay,'select')">
+                        Seleccione la moneda
+                        <i class="fab fa-font-awesome-alt"></i>
+                    </label>
+                    <select formControlName="coin" class="form-input" (change)="selectMonedaPay()"
+                        (focus)="isFocused(11,formNewPay,'select')" (focusout)="isFocused(11,formNewPay,'select')">
+                        <option *ngFor="let coin of coins" value="{{coin.symbol}}">{{coin.name}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-control" [ngClass]="{'input-on-focus':elementHasFocus[12]}">
+                    <label class="form-label label-on-focus-up" [ngStyle]="{'color':'#676d74'}">
+                        Pendiente
+                    </label>
+                    <p *ngIf="sell!==undefined" >{{this.comunicatorSvc.converter(total()-sell.total_pay,coinPay)|
+                        currency:this.formNewPay.get('coin')?.value+' '}}</p>
+                </div>
+                <div class="form-control" [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewPay,'mount')&&
+                elementHasFocus[13],'input-on-focus-fail':!verifyStyleInput(formNewPay,'mount')}">
+                    <label class="form-label" [ngClass]="{'label-on-focus-up':elementHasFocus[13]}" 
+                    [ngStyle]="animationLabel(formNewPay, 'select')">
+                        Monto
+                        <i class="fab fa-font-awesome-alt"></i>
+                    </label>
+                    
+                    <input  autofocus currencyMask formControlName="mount" (focus)="isFocused(13,formNewPay,'mount')"
+                        (focusout)="isFocused(13,formNewPay,'mount')" class="form-input"
+                        [ngStyle]="styleForeground(formNewPay,'mount') " 
+                        [options]="{ prefix: formNewPay.get('coin')?.value+' ',
+                                             thousands: ',', decimal: '.',align:'left' }">
+                </div>
+                <div *ngIf="this.formNewPay.get('type')?.value=== 'Transacción eléctronica'" 
+                class="form-control" [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewPay,'reference')&&
+                elementHasFocus[14],'input-on-focus-fail':!verifyStyleInput(formNewPay,'reference')}">
+                    <label class="form-label" [ngClass]="{'label-on-focus-down':
+                elementHasFocus[14]&&positionLabel[14],
+                'label-on-focus-up':
+                elementHasFocus[14]&&!positionLabel[14]}" [ngStyle]="animationLabel(formNewPay, 'reference')">
+                        Referencia
+                        <i class="fab fa-font-awesome-alt"></i>
+                    </label>
+                    <input formControlName="reference" (focus)="isFocused(14,formNewPay,'reference')"
+                        (focusout)="isFocused(14,formNewPay,'reference')" class="form-input"
+                        [ngStyle]="styleForeground(formNewPay,'reference')" (keypress)="validate($event,false)">
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="form-button pay_btn" title="{{validarPago().msj}}" (click)="registrarPago()"
+                [ngClass]="{'enable aceptar':validarPago().isValid}">
+                    <i class="fas fa-money-bill-wave"></i> &nbsp;&nbsp;AGREGAR PAGO</button>
+                <button class="form-button pay_btn enable" (click)="cancel(pago)" style="color:#f44336">
+                    <i class="far fa-times-circle"></i> &nbsp;&nbsp;CANCELAR</button>
+            </div>
+        </div>
+    </dialog>

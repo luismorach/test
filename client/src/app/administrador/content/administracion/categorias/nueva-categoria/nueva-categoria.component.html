@@ -1,0 +1,71 @@
+<div class="form-container">
+    <h3 class="form-title">
+        <i class="far fa-address-card"></i>
+        &nbsp;Información de la categoría
+    </h3>
+    <div class="form" [formGroup]="formNewCategory">
+        <div class="form-group">
+            <div class="form-control" [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewCategory,'name') && 
+            elementHasFocus[0],'input-on-focus-fail':!verifyStyleInput(formNewCategory,'name')}">
+                <label class="form-label" [ngClass]="{'label-on-focus-down':elementHasFocus[0]&&positionLabel[0],
+                'label-on-focus-up':elementHasFocus[0]&&!positionLabel[0]}"
+                    [ngStyle]="animationLabel(formNewCategory,'name')">
+                    Nombre de la categoría
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <input autofocus formControlName="name"  (focus)="isFocused(0,formNewCategory,'name')"
+                    (focusout)="isFocused(0,formNewCategory,'name')" class="form-input"
+                    [ngStyle]="styleForeground(formNewCategory,'name')">
+            </div>
+            <div class="form-control" [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewCategory,'ubication') && 
+            elementHasFocus[1],'input-on-focus-fail':!verifyStyleInput(formNewCategory,'ubication')}">
+                <label class="form-label" [ngClass]="{'label-on-focus-down':
+                elementHasFocus[1]&&positionLabel[1],
+                'label-on-focus-up':
+                elementHasFocus[1]&&!positionLabel[1]}" [ngStyle]="animationLabel(formNewCategory,
+                'ubication')">
+                    Pasillo o ubicación de la categoría
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <input formControlName="ubication" (focus)="isFocused(1,formNewCategory,'ubication')"
+                    (focusout)="isFocused(1,formNewCategory,'ubication')" class="form-input"
+                    [ngStyle]="styleForeground(formNewCategory,'ubication')">
+
+            </div>
+
+        </div>
+        <div class="form-actions">
+            <div *ngIf="this.routes.url.includes('nueva')" >
+                <button class="form-button" [ngClass]="{'btn-save':formNewCategory.valid}"
+                    (click)="openModal(formNewCategory)">
+                    <i class="far fa-save"></i>
+                    &nbsp;&nbsp;ACEPTAR</button>
+
+                <button class="form-button btn-clean" (click)="clean()">
+                    <i class="fas fa-paint-roller"></i>
+                    &nbsp;&nbsp;LIMPIAR</button>
+            </div>
+            <div *ngIf="this.routes.url.includes('actualizar')">
+                <button class="form-button" [ngClass]="{'btn-update':formNewCategory.valid}"
+                    (click)="openModal(formNewCategory)">
+                    <i class="fa fa-arrows-rotate"></i>
+                    &nbsp;&nbsp;ACTUALIZAR</button>
+            </div>
+        </div>
+
+        <p class="form-info">Los campos marcados con <i class="fab fa-font-awesome-alt"></i>
+            son obligatorios</p>
+    </div>
+</div>
+<dialog class="dialog" #popup>
+    <i class="fa fa-arrows-rotate"></i>
+    <h3>¿Estás seguro?</h3>
+    <p>Lois datos seran guardados en el sistema</p>
+    <div>
+        <button class="form-button btn-save" (click)="acept()">
+            &nbsp;&nbsp;ACEPTAR</button>
+        <button *ngIf="this.popUp?.nativeElement.children[1].textContent === '¿Estás seguro?'"
+            class="form-button btn-save" (click)="cancel(popUp)">
+            &nbsp;&nbsp;CANCELAR</button>
+    </div>
+</dialog>

@@ -1,0 +1,15 @@
+.form-group {
+    flex-wrap: wrap;
+  }
+  .form-control {
+    width: 40%;
+    min-width: 230px;
+  }
+  .btn-save{
+    margin-top:0px;
+  }
+  @media (max-width: 330px) {
+    .form-control{
+     min-width: 0px;
+    }
+  }

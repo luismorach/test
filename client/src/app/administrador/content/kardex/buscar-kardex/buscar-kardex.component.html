@@ -1,0 +1,65 @@
+<div class="form-container">
+    <h3 class="form-title">
+        &nbsp;Buscar por fecha
+    </h3>
+   <div class="form" [formGroup]="formSearchKardex">
+         <div class="form-group">
+            <div class="form-control" [ngClass]="{'input-on-focus':elementHasFocus[0]}">
+                <label class="form-label" [ngClass]="{'label-on-focus-up':
+                elementHasFocus[0]}" [ngStyle]="animationLabel(formSearchKardex,
+                'select')">
+                    Fecha de inicio
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <input type= "date" formControlName="initialDate" (focus)="isFocused(0,formSearchKardex,
+                'select')"
+                    (focusout)="isFocused(0,formSearchKardex,'select')" class="form-input">
+            </div>
+            <div class="form-control" [ngClass]="{'input-on-focus':elementHasFocus[1]}">
+                <label class="form-label" [ngClass]="{'label-on-focus-up':
+            elementHasFocus[1]}" [ngStyle]="animationLabel(formSearchKardex,
+            'select')">
+                    Fecha de fin
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <input type="date" formControlName="endDate" (focus)="isFocused(1,formSearchKardex,'select')"
+                    (focusout)="isFocused(1,formSearchKardex,'select')" class="form-input"
+                    min="{{formSearchKardex.get('initialDate')?.value|date:'yyyy-MM-dd'}}">
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="form-button" title="{{verificarFechas().msj}}" (click)="redirectToKardexByDate()"
+             [ngClass]="{'btn-save':verificarFechas().isValid}">
+                <i class="fa fa-search"></i>
+                &nbsp;&nbsp;BUSCAR</button>
+        </div>
+        <div class="line"></div>
+        <h3 class="form-title">
+            &nbsp;Buscar kardex por producto
+        </h3>
+        <div class="form-group">
+            <div class="form-control" 
+            [ngClass]="{'input-on-focus-success':verifyStyleInput(formSearchKardex,'campSearch')&&
+            elementHasFocus[2],'input-on-focus-fail':!verifyStyleInput(formSearchKardex,'campSearch')}">
+                <label class="form-label" [ngClass]="{'label-on-focus-down':
+                elementHasFocus[2]&&positionLabel[2],
+                'label-on-focus-up':
+                elementHasFocus[2]&&!positionLabel[2]}" [ngStyle]="animationLabel(formSearchKardex,
+                'campSearch')">
+                    Código de barra
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <input formControlName="campSearch" (focus)="isFocused(2,formSearchKardex,'campSearch')"
+                    (focusout)="isFocused(2,formSearchKardex,'campSearch')" 
+                    class="form-input" [ngStyle]="styleForeground(formSearchKardex,'campSearch')">
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="form-button" (click)="redirectToKardexByCriterio()"
+            [ngClass]="{'btn-save':formSearchKardex.get('campSearch')?.valid}">
+                <i class="fa fa-search"></i>
+                &nbsp;&nbsp;BUSCAR</button>
+        </div>
+    </div> 
+</div>
+

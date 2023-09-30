@@ -1,0 +1,201 @@
+<div class="form-container">
+    <h3 class="form-title">
+        <i class="fa fa-barcode"></i>
+        &nbsp;Código de barra
+    </h3>
+    <div class="form" [formGroup]="formNewProduct">
+        <div class="form-group">
+            <div class="form-control" 
+            [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewProduct,'barcode')&&
+            elementHasFocus[5],'input-on-focus-fail':!verifyStyleInput(formNewProduct,'barcode')}">
+                <label class="form-label" [ngClass]="{'label-on-focus-down':
+                elementHasFocus[5]&&positionLabel[5],
+                'label-on-focus-up':
+                elementHasFocus[5]&&!positionLabel[5]}" [ngStyle]="animationLabel(formNewProduct,
+                'barcode')">
+                    Código de barra
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <input formControlName="barcode" (focus)="isFocused(5,formNewProduct,'barcode')"
+                    (focusout)="isFocused(5,formNewProduct,'barcode')" 
+                    class="form-input" [ngStyle]="styleForeground(formNewProduct,'barcode')">
+            </div>
+        </div>
+        <h3 class="form-title">
+            <i class="fas fa-box fa-fw"></i>
+            &nbsp;Información del producto
+        </h3>
+        <div class="form-group">
+            <div class="form-control" 
+            [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewProduct,'name')&&
+            elementHasFocus[1],'input-on-focus-fail':!verifyStyleInput(formNewProduct,'name')}">
+                <label class="form-label" [ngClass]="{'label-on-focus-down':
+            elementHasFocus[1]&&positionLabel[1],
+            'label-on-focus-up':
+            elementHasFocus[1]&&!positionLabel[1]}" [ngStyle]="animationLabel(formNewProduct,
+            'name')">
+                    Nombre
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <input formControlName="name" (focus)="isFocused(1,formNewProduct,'name')"
+                    (focusout)="isFocused(1,formNewProduct,'name')" 
+                    class="form-input" [ngStyle]="styleForeground(formNewProduct,'name')">
+            </div>
+            <div class="form-control" 
+            [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewProduct,'mark')&&
+            elementHasFocus[2],'input-on-focus-fail':!verifyStyleInput(formNewProduct,'mark')}">
+                <label class="form-label" [ngClass]="{'label-on-focus-down':
+                elementHasFocus[2]&&positionLabel[2],
+                'label-on-focus-up':
+                elementHasFocus[2]&&!positionLabel[2]}" [ngStyle]="animationLabel(formNewProduct, 'mark')">
+                    Marca
+                </label>
+                <input formControlName="mark" (focus)="isFocused(2,formNewProduct,'mark')"
+                    (focusout)="isFocused(2,formNewProduct,'mark')" 
+                    class="form-input" [ngStyle]="styleForeground(formNewProduct,'mark')">
+            </div>
+            <div class="form-control" 
+            [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewProduct,'model')&&
+            elementHasFocus[3],'input-on-focus-fail':!verifyStyleInput(formNewProduct,'model')}">
+                <label class="form-label" [ngClass]="{'label-on-focus-down':
+                elementHasFocus[3]&&positionLabel[3],
+                'label-on-focus-up':
+                elementHasFocus[3]&&!positionLabel[3]}" [ngStyle]="animationLabel(formNewProduct,
+                'model')">
+                    Modelo
+                </label>
+                <input formControlName="model" (focus)="isFocused(3,formNewProduct,'model')"
+                    (focusout)="isFocused(3,formNewProduct,'model')" 
+                    class="form-input" [ngStyle]="styleForeground(formNewProduct,'model')">
+            </div>
+            <div class="form-control" 
+            [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewProduct,'discount')&&
+            elementHasFocus[4],'input-on-focus-fail':!verifyStyleInput(formNewProduct,'discount')}">
+                <label class="form-label" [ngClass]="{'label-on-focus-down':
+                elementHasFocus[4]&&positionLabel[4],
+                'label-on-focus-up':
+                elementHasFocus[4]&&!positionLabel[4]}" [ngStyle]="animationLabel(formNewProduct,
+                'discount')">
+                    Descuento del producto (%)
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <input formControlName="discount" (focus)="isFocused(4,formNewProduct,'discount')"
+                    (focusout)="isFocused(4,formNewProduct,'discount')" 
+                    class="form-input" [ngStyle]="styleForeground(formNewProduct,'discount')">
+            </div>
+        </div>
+        <h3 class="form-title">
+            <i class="fas fa-calendar-alt"></i>
+            &nbsp;Vencimiento del producto
+        </h3>
+        <div class="form-group">
+            <label class="ratio-buttons">
+                <input (change)="setValidator('can_expir','Si vence','expir')" 
+                formControlName="can_expir" type="radio"  value="true" checked>
+                &nbsp;<i class="far fa-check-circle fa-fw"></i>&nbsp;Si Vence
+            </label>
+        </div>
+        <div class="form-group">
+            <label class="ratio-buttons">
+                <input (change)="setValidator('can_expir','Si vence','expir')" 
+                 formControlName="can_expir" type="radio" value="false">
+                &nbsp;<i class="far fa-times-circle fa-fw"></i>&nbsp;No vence
+            </label>
+
+        </div>
+        
+        <h3 class="form-title">
+            <i class="fas fa-history"></i>
+            &nbsp;Garantia de fábrica
+        </h3>
+        <div class="form-group">
+            <div class="form-control">
+                <label class="form-label" [ngClass]="{'label-on-focus-up':
+                elementHasFocus[6]}" [ngStyle]="animationLabel(formNewProduct,'select')">
+                    Garantia
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <select (change)="setValidator('garanty','Habilitada','time_garanty')" formControlName="garanty" id="" class="form-input" (focus)="isFocused(6,formNewProduct,'select')"
+                    (focusout)="isFocused(6,formNewProduct,'select')">
+                    <option>Habilitada</option>
+                    <option>Deshabilitada</option>
+                </select>
+            </div>
+            
+            <div *ngIf="this.formNewProduct.get('garanty')?.value==='Habilitada'" 
+            class="form-control" [ngClass]="{'input-on-focus':elementHasFocus[8]}">
+                <label class="form-label" [ngClass]="{'label-on-focus-up':
+                elementHasFocus[8]}" [ngStyle]="animationLabel(formNewProduct,'select')">
+                    Fecha límite de garantía
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <input type="date" formControlName="time_garanty" 
+                (focus)="isFocused(8,formNewProduct,'time_garanty')"
+                (focusout)="isFocused(8,formNewProduct,'time_garanty')" 
+                class="form-input">
+            </div>
+        </div>
+        <h3 class="form-title">
+            <i class="fas fa-truck-loading"></i>
+            Categoría & impuesto
+        </h3>
+        <div class="form-group">
+            <div class="form-control">
+                <label class="form-label" [ngClass]="{'label-on-focus-up':
+            elementHasFocus[9]}" [ngStyle]="animationLabel(formNewProduct,'select')">
+                    Categoría
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <select formControlName="id_category" id="" class="form-input" (focus)="isFocused(9,formNewProduct,'select')"
+                    (focusout)="isFocused(9,formNewProduct,'select')">
+                    <option *ngFor="let category of categories" 
+                    value="{{category.id_category}}">{{category.name}}</option>
+                </select>
+            </div>
+            <div class="form-control">
+                <label class="form-label" [ngClass]="{'label-on-focus-up':
+            elementHasFocus[15]}" [ngStyle]="animationLabel(formNewProduct,'select')">
+                    Impuesto
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <select formControlName="impuest" id="" class="form-input" (focus)="isFocused(15,formNewProduct,'select')"
+                    (focusout)="isFocused(15,formNewProduct,'select')">
+                    <option *ngIf="building!=undefined" value={{building.tax_rate}}>
+                        {{building.name_tax.toUpperCase()}}</option>
+                    <option value=0>EXENTO</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-actions">
+            <div *ngIf="this.routes.url.includes('nuevo')">
+                <button class="form-button" id="btn-success" [ngClass]="{'btn-save':formNewProduct.valid}"
+                    (click)="openModal(formNewProduct)">
+                    <i class="far fa-save"></i>
+                    &nbsp;&nbsp;ACEPTAR</button>
+                <button class="form-button btn-clean" id="btn-clean" (click)="clean()">
+                    <i class="fas fa-paint-roller"></i>
+                    &nbsp;&nbsp;LIMPIAR</button>
+            </div>
+            <div *ngIf="this.routes.url.includes('actualizar')">
+                <button class="form-button" [ngClass]="{'btn-update':formNewProduct.valid}" 
+                (click)="openModal(formNewProduct)">
+                    <i class="fa fa-arrows-rotate"></i>
+                    &nbsp;&nbsp;ACTUALIZAR</button>
+            </div>
+        </div>
+        <p class="form-info">Los campos marcados con <i class="fab fa-font-awesome-alt"></i> 
+            son obligatorios</p>
+    </div>
+</div>
+<dialog class="dialog" #popup>
+    <i class="fa fa-arrows-rotate"></i>
+    <h3>¿Estás seguro?</h3>
+    <p>Lois datos seran guardados en el sistema</p>
+    <div>
+        <button class="form-button btn-save" (click)="acept()">
+            &nbsp;&nbsp;ACEPTAR</button>
+        <button *ngIf="this.popUp?.nativeElement.children[1].textContent === '¿Estás seguro?'"
+         class="form-button btn-save" (click)="cancel(popUp)">
+            &nbsp;&nbsp;CANCELAR</button>
+    </div>
+</dialog>

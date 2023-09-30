@@ -1,0 +1,124 @@
+<h3 class="report-title">Estadísticas de venta hoy ({{date|date:'dd/MM/yyyy'}})</h3>
+<div class="table-body">
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Caja</th>
+                    <th>Vendedor</th>
+                    <th>Ventas realizadas</th>
+                    <th>Total en ventas</th>
+                    <th>Costo de venta</th>
+                    <th>Ganancias</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody >
+                 <tr *ngFor="let reporte of reportes">
+                    <td>{{reporte.name}}</td>
+                    <td>{{reporte.names_user}} {{reporte.last_names_user}}</td>
+                    <td>{{reporte.sells}}</td>
+                    <td>{{reporte.total_sell|currency:reporte.coin+' '}}</td>
+                    <td>{{reporte.costos|currency:reporte.coin+' '}}</td>
+                    <td>{{reporte.total_sell-reporte.costos|currency:reporte.coin+' '}}</td>
+                </tr>
+                <tr *ngIf="reportes.length<1">
+                    <td colspan="7">No hay ventas realizadas el dia de hoy</td>
+                </tr> 
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="table-body">
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Total ventas realizadas</th>
+                    <th>Total en ventas</th>
+                    <th>Total costos de venta</th>
+                    <th>Total ganancias</th>
+                </tr>
+            </thead>
+ 
+            <tbody >
+                <tr *ngIf="reportes.length>0">
+                    <td>{{calcularTotales(reportes).sells}}</td>
+                    <td>{{calcularTotales(reportes).total_sell|currency:calcularTotales(reportes).coin+' '}}</td>
+                    <td>{{calcularTotales(reportes).total_costos|currency:calcularTotales(reportes).coin+' '}}</td>
+                    <td>{{calcularTotales(reportes).ganancias|currency:calcularTotales(reportes).coin+' '}}</td>
+                </tr>
+                <tr *ngIf="reportes.length<1">
+                    <td colspan="7">No hay ventas realizadas el dia de hoy</td>
+                </tr> 
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="table-body">
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Moneda</th>
+                    <th>Total en transacciones eléctronicas</th>
+                    <th>Total en efectivo</th>
+                </tr>
+            </thead>
+
+              <tbody>
+                <tr *ngFor="let reportePago of reportesPagos; let i=index">
+                    <td>{{reportePago.name}} {{reportePago.symbol}}</td>
+                    <td >{{reportePago.transaccion|currency:reportePago.symbol+' '}}</td>
+                    <td >{{reportePago.efectivo|currency:reportePago.symbol+' '}}</td>
+                </tr>
+               
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="form-actions">
+    <button class="form-button btn" (click)="createPDF('reporte de hoy')"
+    [ngClass]="{'enable':reportes.length>0}">
+        <i class="fas fa-print"></i>&nbsp;&nbsp;IMPRIMIR</button>
+   
+</div>
+<div class="line"></div>
+<div class="form-container">
+    <h3 class="form-title">
+        &nbsp;Generar reporte por fecha
+    </h3>
+    <div class="form" [formGroup]="formGenerateReport">
+        <div class="form-group">
+            <div class="form-control" [ngClass]="{'input-on-focus':elementHasFocus[0]}">
+                <label class="form-label" [ngClass]="{'label-on-focus-up':
+                elementHasFocus[0]}" [ngStyle]="animationLabel(formGenerateReport,
+                'select')">
+                    Fecha de inicio
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <input type="date" formControlName="initialDate" (focus)="isFocused(0,formGenerateReport,
+                'select')" (focusout)="isFocused(0,formGenerateReport,'select')" class="form-input">
+            </div>
+            <div class="form-control" [ngClass]="{'input-on-focus':elementHasFocus[1]}">
+                <label class="form-label" [ngClass]="{'label-on-focus-up':
+            elementHasFocus[1]}" [ngStyle]="animationLabel(formGenerateReport,
+            'select')">
+                     Fecha de fin
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <input type="date" formControlName="endDate" (focus)="isFocused(1,formGenerateReport,'select')"
+                    (focusout)="isFocused(1,formGenerateReport,'select')" class="form-input"
+                    min="{{formGenerateReport.get('initialDate')?.value|date:'yyyy-MM-dd'}}">
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="form-button btn" title="{{verificarFechas().msj}}"
+            (click)="consultar()"
+            [ngClass]="{'enable':verificarFechas().isValid}">
+                <i class="far fa-save"></i>
+                &nbsp;&nbsp;GENERAR REPORTE</button>
+        </div>
+    </div>
+</div>

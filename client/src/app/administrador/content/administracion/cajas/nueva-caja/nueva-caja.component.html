@@ -1,0 +1,65 @@
+<div class="form-container">
+    <h3 class="form-title">
+        <i class="far fa-address-card"></i>
+        &nbsp;Información de la caja
+    </h3>
+    <div class="form" [formGroup]="newRegister">
+        <div class="form-group">
+            <div class="form-control" [ngClass]="{'input-on-focus-success':verifyStyleInput(newRegister,'name')&&
+            elementHasFocus[0],'input-on-focus-fail':!verifyStyleInput(newRegister,'name')}">
+                <label class="form-label" [ngClass]="{'label-on-focus-down':elementHasFocus[0]&&positionLabel[0],
+                'label-on-focus-up': elementHasFocus[0]&&!positionLabel[0]}"
+                    [ngStyle]="animationLabel(newRegister,'name')">
+                    Nombre de la caja
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <input autofocus formControlName="name"  (focus)="isFocused(0,newRegister,'name')"
+                    (focusout)="isFocused(0,newRegister,'name')" class="form-input"
+                    [ngStyle]="styleForeground(newRegister,'name')">
+            </div>
+            <div class="form-control">
+                <label for="estado-caja" class="form-label" [ngClass]="{'label-on-focus-up': elementHasFocus[1]}"
+                    [ngStyle]="animationLabel(newRegister,'select')">
+                    Estado de la caja
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <select formControlName="state" class="form-input" (focus)="isFocused(1,newRegister,'name')"
+                    (focusout)="isFocused(1,newRegister,'name')">
+                    <option>Habilitada</option>
+                    <option>Deshabilitada</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-actions">
+            <div *ngIf="this.routes.url.includes('nueva')">
+                <button class="form-button" id="btn-success" [ngClass]="{'btn-save':newRegister.valid}"
+                    (click)="openModal(newRegister)">
+                    <i class="far fa-save"></i>
+                    &nbsp;&nbsp;ACEPTAR</button>
+                <button class="form-button btn-clean" id="btn-clean" (click)="clean()">
+                    <i class="fas fa-paint-roller"></i>
+                    &nbsp;&nbsp;LIMPIAR</button>
+            </div>
+            <div *ngIf="this.routes.url.includes('actualizar')">
+                <button class="form-button" [ngClass]="{'btn-update':newRegister.valid}" 
+                (click)="openModal(newRegister)">
+                    <i class="fa fa-arrows-rotate"></i>
+                    &nbsp;&nbsp;ACTUALIZAR</button>
+            </div>
+        </div>
+        <p class="form-info">Los campos marcados con <i class="fab fa-font-awesome-alt"></i>
+            son obligatorios</p>
+        <dialog class="dialog" #popup>
+            <i class="fa-regular fa-circle-question" ></i>
+            <h3>¿Estás seguro?</h3>
+            <p>Los datos seran guardados en el sistema</p>
+            <div>
+                <button class="form-button btn-save" (click)="acept()">
+                    &nbsp;&nbsp;ACEPTAR</button>
+                <button *ngIf="this.popUp?.nativeElement.children[1].textContent === '¿Estás seguro?'"
+                 class="form-button btn-cancel" (click)="cancel(popUp)">
+                    &nbsp;&nbsp;CANCELAR</button>
+            </div>
+        </dialog>
+    </div>
+</div>

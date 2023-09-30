@@ -1,0 +1,66 @@
+<div class="form-container">
+    <h3 class="form-title">
+        &nbsp;Buscar por fecha
+    </h3>
+   <div class="form" [formGroup]="formSearchSells">
+         <div class="form-group">
+            <div class="form-control" [ngClass]="{'input-on-focus':elementHasFocus[0]}">
+                <label class="form-label" [ngClass]="{'label-on-focus-up':
+                elementHasFocus[0]}" [ngStyle]="animationLabel(formSearchSells,
+                'select')">
+
+                    Fecha de inicio
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <input type= "date" formControlName="initialDate" (focus)="isFocused(0,formSearchSells,
+                'select')"
+                    (focusout)="isFocused(0,formSearchSells,'select')" 
+                    class="form-input">
+            </div>
+            <div class="form-control" [ngClass]="{'input-on-focus':elementHasFocus[1]}">
+                <label class="form-label" [ngClass]="{'label-on-focus-up':
+            elementHasFocus[1]}" [ngStyle]="animationLabel(formSearchSells,
+            'select')">
+                    Fecha de fin
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <input type="date" formControlName="endDate" (focus)="isFocused(1,formSearchSells,'select')"
+                   min="{{formSearchSells.get('initialDate')?.value|date:'yyyy-MM-dd'}}" (focusout)="isFocused(1,formSearchSells,'select')" class="form-input">
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="form-button" title="{{verificarFechas().msj}}" (click)="redirectToVentasRealizadas()"
+            [ngClass]="{'btn-save':verificarFechas().isValid}">
+                <i class="fa fa-search"></i>
+                &nbsp;&nbsp;BUSCAR</button>
+        </div>
+        <div class="line"></div>
+        <h3 class="form-title">
+            &nbsp;Buscar por ticket, cliente o usuario
+        </h3>
+        <div class="form-group">
+            <div class="form-control" 
+            [ngClass]="{'input-on-focus-success':verifyStyleInput(formSearchSells,'campSearch')&&
+            elementHasFocus[2],'input-on-focus-fail':!verifyStyleInput(formSearchSells,'campSearch')}">
+                <label class="form-label" [ngClass]="{'label-on-focus-down':
+                elementHasFocus[2]&&positionLabel[2],
+                'label-on-focus-up':
+                elementHasFocus[2]&&!positionLabel[2]}" [ngStyle]="animationLabel(formSearchSells,
+                'campSearch')">
+                    criterio a buscar
+                    <i class="fab fa-font-awesome-alt"></i>
+                </label>
+                <input formControlName="campSearch" (focus)="isFocused(2,formSearchSells,'campSearch')"
+                    (focusout)="isFocused(2,formSearchSells,'campSearch')" 
+                    class="form-input" [ngStyle]="styleForeground(formSearchSells,'campSearch')">
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="form-button" (click)="redirectToVentasRealizadasByCriterio()"
+            [ngClass]="{'btn-save':formSearchSells.get('campSearch')?.valid}">
+                <i class="fa fa-search"></i>
+                &nbsp;&nbsp;BUSCAR</button>
+        </div>
+    </div> 
+</div>
+

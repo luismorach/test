@@ -1,0 +1,217 @@
+<div class="form-container">
+    <div class="back">
+        <button (click)="redirectToVentasRealizadas()" class="form-button btn-save"><i class="fas fa-reply"></i>
+            &nbsp;Regresar</button>
+    </div>
+    <h3 class="form-title">
+        &nbsp;Datos de la venta
+    </h3>
+    <div class="datos" *ngIf="sell!==undefined">
+        <div>
+            <h3>DATOS DE VENTA</h3>
+            <p><strong>N° factura: </strong>{{sell.id_sell}}</p>
+            <p><strong>Fecha: </strong>{{sell.date|date:'dd/MM/yyyy'}} {{sell.time|date:'hh:mm:ss aaaa'}}</p>
+            <p><strong>Tipo de venta: </strong>{{sell.type_sell}}</p>
+        </div>
+        <div>
+            <h3>CAJA Y USUARIO</h3>
+            <p><strong>Caja: </strong>{{register_sell.name}}</p>
+            <p><strong>Vendedor: </strong>{{user_sell.names_user}} {{user_sell.last_names_user}}</p>
+            <p><strong>Cliente: </strong> {{client.names_client}} {{client.last_names_client}}</p>
+        </div>
+        <div>
+            <h3>TOTALES Y ESTADO</h3>
+            <p><strong>Total: </strong>{{sell.total_sell|currency:sell.coin+' '}}</p>
+            <p><strong>Pagado: </strong>{{sell.total_pay|currency:sell.coin+' '}}</p>
+            <p><strong>Estado:</strong> {{sell.state}}</p>
+            <p><strong>Costos de venta:</strong>{{calcularCostosVenta()|currency:sell.coin+' '}}</p>
+            <p><strong>Utilidad (ganancias): </strong>{{sell.total_sell-calcularCostosVenta()|currency:sell.coin+' '}}
+            </p>
+        </div>
+
+    </div>
+    <h3 class="form-title">
+        &nbsp;Detalles de venta
+    </h3>
+    <div class="table-container">
+        <div class="table-title">
+            <h6>productos vendidos</h6>
+        </div>
+        <div class="table-body">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>N°</th>
+                            <th>Código de barra</th>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio de venta</th>
+                            <th>Descuento</th>
+                            <th>Valor de descuento</th>
+                            <th>IVA</th>
+                            <th>Sub total</th>
+                            <th>Devolución</th>
+                        </tr>
+                    </thead>
+
+                    <tbody #tab>
+                        <tr *ngFor="let sell_product of sell_products; let i=index">
+                            <td>{{i+1}}</td>
+                            <td *ngIf="products[i]!=undefined">{{products[i].barcode}}</td>
+                            <td *ngIf="products[i]!=undefined">
+                                {{products[i].name}}&nbsp;{{products[i].mark}}&nbsp;{{products[i].model}}&nbsp;</td>
+                            <td>{{sell_product.quantity_products}} </td>
+                            <td>{{sell_product.sell_price|currency:sell.coin+' '}}</td>
+                            <td>{{sell_product.discount_product|percent:'2.2-2'}}</td>
+                            <td>{{sell_product.discount_product*sell_product.sell_price|currency:sell.coin+' '}}</td>
+                            <td>{{sell_product.impuest|percent:'2.2-2'}}</td>
+                            <td>{{calcularSubtotal(i)|currency:sell.coin+' '}}</td>
+                            <td class="icon" (click)="showModal(products[i],i)">
+                                <i class="fas fa-truck-loading fa-fw" style="color:#009688"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="totales" *ngIf="sell!==undefined">
+        <div>
+            <p><strong>SUBTOTAL </strong></p>
+            <p>+ {{calcularTotal()|currency:sell.coin+' '}}</p>
+        </div>
+        <div>
+            <p><strong>IVA </strong></p>
+            <p>+ {{calcularImpuestoVenta()|currency:sell.coin+' '}}</p>
+        </div>
+        <div>
+            <p><strong>DESCUENTO </strong></p>
+            <p>- {{calcularDescuentoVenta()|currency:sell.coin+' '}}</p>
+        </div>
+        <div>
+            <p><strong>TOTAL </strong></p>
+            <p>{{total()|currency:sell.coin+' '}}</p>
+        </div>
+    </div>
+    <div class="line"></div>
+    <h3 class="form-title">
+        &nbsp;Detalles de pagos
+    </h3>
+    <div class="table-container">
+        <div class="table-title">
+            <h6>Pagos realizados</h6>
+        </div>
+        <div class="table-body">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>N°</th>
+                            <th>Fecha</th>
+                            <th>Tipo de venta</th>
+                            <th>Monto</th>
+                            <th>Referencia</th>
+                            <th>Vendedor</th>
+                            <th>caja</th>
+                        </tr>
+                    </thead>
+
+                    <tbody #tab>
+                        <tr *ngFor="let pay of pays; let i=index">
+                            <td>{{i+1}}</td>
+                            <td>{{pay.date|date:'dd/MM/yyyy'}}</td>
+                            <td>{{pay.type}}</td>
+                            <td>{{pay.mount|currency:pay.coin+' '}}</td>
+                            <td>{{pay.reference}}</td>
+                            <td>{{user_pay[i].names_user}} {{user_pay[i].last_names_user}}</td>
+                            <td>{{registers_pay[i].name}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="line"></div>
+    <h3 class="form-title">
+        &nbsp;Detalles de devoluciones
+    </h3>
+    <div class="table-container">
+        <div class="table-title">
+            <h6>Devoluciones realizadas</h6>
+        </div>
+        <div class="table-body">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>N°</th>
+                            <th>Fecha</th>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio de compra</th>
+                            <th>Total</th>
+                            <th>Vendedor</th>
+                            <th>caja</th>
+                        </tr>
+                    </thead>
+
+                    <tbody #tab>
+                        <tr *ngFor="let repayment of repayments; let i=index">
+                            <td>{{i+1}}</td>
+                            <td>{{repayment.date|date:'dd/MM/yyyy'}}</td>
+                            <td>{{product(repayment)}}</td>
+                            <td>{{repayment.quantity}}</td>
+                            <td>{{repayment.sell_price|currency:repayment.coin+' '}}</td>
+                            <td>{{repayment.total|currency:repayment.coin+' '}}</td>
+                            <td>{{users_repayment[i].names_user}} {{users_repayment[i].last_names_user}}</td>
+                            <td>{{registers_repayment[i].name}}</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<dialog #quantity class="quantity">
+    <div class="header">
+        <h2 class="title">Realizar devolución</h2>
+        <button class="btn-cerrar-dialog" (click)="cancel(quantityBack)">x</button>
+    </div>
+    <div class="form" [formGroup]="formDevolucion">
+        <div class="form-control" [ngClass]="{'input-on-focus-success':verifyStyleInput(formDevolucion,'quantity_back')&&
+    elementHasFocus[7],'input-on-focus-fail':!verifyStyleInput(formDevolucion,'quantity_back')}">
+            <label class="form-label" [ngClass]="{'label-on-focus-down':
+elementHasFocus[7]&&positionLabel[7],
+'label-on-focus-up':
+elementHasFocus[7]&&!positionLabel[7]}" [ngStyle]="animationLabel(formDevolucion,
+'quantity_back')">
+                Cantidad a devolver
+            </label>
+            <input formControlName="quantity_back" (focus)="isFocused(7,formDevolucion,'quantity_back')"
+                (focusout)="isFocused(7,formDevolucion,'quantity_back')" class="form-input"
+                [ngStyle]="styleForeground(formDevolucion,'quantity_back')" (keypress)="validate($event,false)">
+        </div>
+    </div>
+    <div class="form-actions">
+        <button class="form-button btn"
+            [ngClass]="{'enable aceptar':formDevolucion.get('quantity_back')?.value.length>0}"
+            (click)="registrarDevolucion()">
+            <i class="fas fa-truck-loading fa-fw"></i> &nbsp;&nbsp;REALIZAR DEVOLUCIÓN</button>
+        <button class="form-button btn enable" (click)="cancel(quantityBack)" style="color:#f44336">
+            <i class="far fa-times-circle"></i> &nbsp;&nbsp;CANCELAR</button>
+    </div>
+</dialog>
+<dialog class="dialog" #popup>
+    <i class="fa-regular fa-circle-question"></i>
+    <h3>¿Estas seguro?</h3>
+    <p>Lois datos seran guardados en el sistema</p>
+    <div>
+        <button class="form-button btn-save" (click)="acept()">
+            &nbsp;&nbsp;ACEPTAR</button>
+        <button *ngIf="this.popUp?.nativeElement.children[1].textContent === '¿Estás seguro?'"
+            class="form-button btn-cancel" (click)="cancel(popUp)">
+            &nbsp;&nbsp;CANCELAR</button>
+    </div>
+</dialog>

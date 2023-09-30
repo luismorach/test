@@ -1,0 +1,93 @@
+<div class="table-container">
+    <div class="table-title">
+        <h6>Proveedores Registrados</h6>
+    </div>
+    <div class="table-body">
+        <div class="search-pagination" [formGroup]="tableSearch">
+            <div class="dataTable-length">
+                <label>Mostrar
+                    <select name="dataTable-length" formControlName="numberRows" class="custom-select"
+                        (change)="createPages(tableSearch,currentData,providers)">
+                        <option value="2">2</option>
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select> entradas</label>
+            </div>
+            <div class="dataTable-filter">
+                <label>Buscar:
+                    <input formControlName="search" class="input-search providersTable-filter"
+                        (keyup)="createPages(tableSearch,currentData,providers)">
+                </label>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>Numero de documento</th>
+                        <th>Nombre proveedor</th>
+                        <th>Direccion</th>
+                        <th>Estado</th>
+                        <th>Nombre encargado</th>
+                        <th>Télefono</th>
+                        <th>Email</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let provider of providers | 
+                    tableFilter:getValuesToPipe(tableSearch);let i=index">
+                        <td>{{i+1}}</td>
+                        <td>{{provider.document_type}}{{provider.document_number}}</td>
+                        <td>{{provider.name_provider}}</td>
+                        <td>{{provider.address_provider}}</td>
+                        <td>{{provider.state}}</td>
+                        <td>{{provider.name_boss}}</td>
+                        <td>{{provider.phone_number}}</td>
+                        <td>{{provider.email}}</td>
+                        <td class="icon" (click)="redirectToUpdate(provider)"><i class="fa fa-arrows-rotate update"></i></td>
+                        <td class="icon" (click)="openModalToDelete(); providerToDelete=provider">
+                            <i class="fa fa-trash-can delete"></i></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="search-pagination">
+            <div class="dataTables_info" #dataTables_info>
+            </div>
+            <div class="pagination-responsive">
+                <ul class="pagination" #pagination>
+                    <li class="previous page-item dataTables_info items"
+                        [class.disable]="getValuesToPipe(tableSearch).indexCurrentPage===0"
+                        [class.active]="getValuesToPipe(tableSearch).indexCurrentPage!=0"
+                        (click)="previousPage(tableSearch,currentData,providers)">
+                        Previous
+                    </li>
+
+                    <li class="next dataTables_info active items" #next
+                        [class.disable]="getValuesToPipe(tableSearch).indexCurrentPage===numberPages-1"
+                        (click)="nextPage(tableSearch,currentData,providers)">
+                        Next
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<dialog class="dialog" #popup>
+    <i class="fa fa-arrows-rotate"></i>
+    <h3>¿Estas seguro?</h3>
+    <p>Lois datos seran guardados en el sistema</p>
+    <div>
+        <button class="form-button btn-save" (click)="delete(providerToDelete)">
+            &nbsp;&nbsp;ACEPTAR</button>
+        <button *ngIf="this.popUp?.nativeElement.children[1].textContent === '¿Estás seguro?'"
+         class="form-button btn-save" (click)="cancel(popUp)">
+            &nbsp;&nbsp;CANCELAR</button>
+    </div>
+</dialog>

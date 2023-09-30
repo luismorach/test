@@ -1,0 +1,140 @@
+<div class="form-container">
+    <div class="datos">
+        <div>
+            <p *ngIf="buy!=undefined"> <strong>FECHA:</strong> {{buy.time|date:'dd/MM/yyyy'}}</p>
+            <p *ngIf="user!=undefined"> <strong>COMPRA REGISTRADA POR:</strong> {{user.names_user}} 
+                {{user.last_names_user}}</p>
+        </div>
+        <div>
+            <p *ngIf="provider!=undefined"> <strong>PROVEEDOR:</strong> {{provider.name_provider}}
+                {{provider.address_provider}}</p>
+
+        </div>
+        <button (click)="redirectToComprasRealizadas()"
+         class="form-button btn-save"><i class="fas fa-reply"></i> &nbsp;Regresar</button>
+    </div>
+    <div class="table-container">
+        <div class="table-title">
+            <h6>productos comprados</h6>
+        </div>
+        <div class="table-body">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>N°</th>
+                            <th>Código de barra</th>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio de compra</th>
+                            <th>Sub total</th>
+                            <th>Devolución</th>
+                        </tr>
+                    </thead>
+
+                    <tbody #tab>
+                        <tr *ngFor="let buy_product of buy_products; let i=index">
+                            <td>{{i+1}}</td>
+                            <td *ngIf="products[i]!=undefined">{{products[i].barcode}}</td>
+                            <td *ngIf="products[i]!=undefined">
+                                {{products[i].name}}&nbsp;{{products[i].mark}}&nbsp;{{products[i].model}}&nbsp;</td>
+                            <td>{{buy_product.quantity_products}} </td>
+                            <td>{{buy_product.buy_price|currency:buy.coin+' '}}</td>
+                            <td>{{buy_product.quantity_products*buy_product.buy_price|currency:buy.coin+' '}}</td>
+                            <td class="icon" (click)="showModal(products[i],i)">
+                                <i class="fas fa-truck-loading fa-fw" style="color:#009688"></i>
+                            </td>
+                        </tr>
+                     <tr *ngIf="buy_products.length>0">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><strong>Total</strong></td>
+                        <td>{{calcularTotal()|currency:buy.coin+' '}}</td>
+                        <td></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="table-container">
+        <div class="table-title">
+            <h6>Devoluciones realizadas</h6>
+        </div>
+        <div class="table-body">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>N°</th>
+                            <th>Fecha</th>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio de compra</th>
+                            <th>Total</th>
+                            <th>Vendedor</th>
+                            <th>caja</th>
+                        </tr>
+                    </thead>
+
+                    <tbody #tab>
+                       <tr *ngFor="let repayment of repayments; let i=index">
+                        <td>{{i+1}}</td>
+                        <td>{{repayment.date|date:'dd/MM/yyyy'}}</td>
+                        <td>{{product(repayment)}}</td> 
+                        <td>{{repayment.quantity}}</td>
+                        <td>{{repayment.buy_price|currency:repayment.coin+' '}}</td>
+                        <td>{{repayment.total|currency:repayment.coin+' '}}</td>
+                    </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<dialog #quantity class="quantity">
+    <div class="header">
+        <h2 class="title">Realizar devolución</h2>
+        <button class="btn-cerrar-dialog" (click)="cancel(quantityBack)">x</button>
+    </div>
+    <div class="form" [formGroup]="formDevolucion">
+        <div class="form-control" [ngClass]="{'input-on-focus-success':verifyStyleInput(formDevolucion,'quantity_back')&&
+    elementHasFocus[7],'input-on-focus-fail':!verifyStyleInput(formDevolucion,'quantity_back')}">
+            <label class="form-label" [ngClass]="{'label-on-focus-down':
+elementHasFocus[7]&&positionLabel[7],
+'label-on-focus-up':
+elementHasFocus[7]&&!positionLabel[7]}" [ngStyle]="animationLabel(formDevolucion,
+'quantity_back')">
+                Cantidad a devolver
+            </label>
+            <input formControlName="quantity_back"
+                (focus)="isFocused(7,formDevolucion,'quantity_back')"
+                (focusout)="isFocused(7,formDevolucion,'quantity_back')" class="form-input"
+                [ngStyle]="styleForeground(formDevolucion,'quantity_back')"
+                (keypress)="validate($event,false)">
+        </div>
+    </div>
+    <div class="form-actions">
+        <button class="form-button btn"
+            [ngClass]="{'enable aceptar':formDevolucion.get('quantity_back')?.value.length>0}"
+            (click)="registrarDevolucion()">
+           <i class="fas fa-truck-loading fa-fw"></i> &nbsp;&nbsp;REALIZAR DEVOLUCIÓN</button>
+        <button class="form-button btn enable" (click)="cancel(quantityBack)" style="color:#f44336">
+            <i class="far fa-times-circle"></i> &nbsp;&nbsp;CANCELAR</button>
+    </div>
+</dialog>
+<dialog class="dialog" #popup>
+    <i class="fa-regular fa-circle-question"></i>
+    <h3>¿Estas seguro?</h3>
+    <p>Lois datos seran guardados en el sistema</p>
+    <div>
+        <button class="form-button btn-save" (click)="acept()">
+            &nbsp;&nbsp;ACEPTAR</button>
+        <button *ngIf="this.popUp?.nativeElement.children[1].textContent === '¿Estás seguro?'"
+            class="form-button btn-cancel" (click)="cancel(popUp)">
+            &nbsp;&nbsp;CANCELAR</button>
+    </div>
+</dialog>

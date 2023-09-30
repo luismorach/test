@@ -1,0 +1,274 @@
+<div class="main-container">
+    <div class="left-container">
+        <p>Ingrese el código de barras del producto y luego haga clic en
+            <strong>“Verificar producto”</strong>
+            para cargar los datos en caso de que el producto ya este registrado, en caso contrario
+            se cargará el formulario para registrar un nuevo producto.
+        </p>
+        <div class="addBuy">
+            <div class="form" [formGroup]="formNewBuy">
+                <div class="form-group">
+                    <button class="btn enable" (click)="searchProduct()">
+                        <i class="fa fa-search"></i>
+                        &nbsp;&nbsp;BUSCAR PRODUCTO
+                    </button>
+                    <div class="form-control" [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewBuy,'barcode')&&
+                    elementHasFocus[0],'input-on-focus-fail':!verifyStyleInput(formNewBuy,'barcode')}">
+                        <label class="form-label" [ngClass]="{'label-on-focus-down':
+            elementHasFocus[0]&&positionLabel[0],
+            'label-on-focus-up':
+            elementHasFocus[0]&&!positionLabel[0]}" [ngStyle]="animationLabel(formNewBuy,
+            'barcode')">
+                            Código de barra
+                        </label>
+                        <input formControlName="barcode" (focus)="isFocused(0,formNewBuy,'barcode')"
+                            (focusout)="isFocused(0,formNewBuy,'barcode')" class="form-input"
+                            [ngStyle]="styleForeground(formNewBuy,'barcode')">
+                    </div>
+                    <div class="form-control" [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewBuy,'productQuantity')&&
+                    elementHasFocus[1],'input-on-focus-fail':!verifyStyleInput(formNewBuy,'productQuantity')}">
+                        <label class="form-label" [ngClass]="{'label-on-focus-down':
+                elementHasFocus[1]&&positionLabel[1],
+                'label-on-focus-up':
+                elementHasFocus[1]&&!positionLabel[1]}" [ngStyle]="animationLabel(formNewBuy, 'productQuantity')">
+                            Cantidad del producto
+                        </label>
+                        <input formControlName="productQuantity" (focus)="isFocused(1,formNewBuy,'productQuantity')"
+                            (focusout)="isFocused(1,formNewBuy,'productQuantity')" class="form-input"
+                            [ngStyle]="styleForeground(formNewBuy,'productQuantity')">
+                    </div>
+
+                    <button class="btn" [ngClass]="{'enable':formNewBuy.valid}" (click)="addProduct()">
+                        <i class="far fa-check-circle"></i>
+                        &nbsp;&nbsp;VERIFICAR PRODUCTO
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="table-container">
+            <div class="table-title">
+                <h6>Productos añadidos a la compra</h6>
+            </div>
+            <div class="table-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>N°</th>
+                                <th>Código de barra</th>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Precio de compra</th>
+                                <th>Sub total</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody #tab>
+                            <tr *ngFor="let product of products; let i=index">
+                                <td>{{i+1}}</td>
+                                <td>{{product.barcode}}</td>
+                                <td>{{product.name}}&nbsp;{{product.mark}}&nbsp;{{product.model}}&nbsp;</td>
+                                <td>
+                                    <input currencyMask class="input-table" [(ngModel)]="listProductsToBuy[i].quantity_products"
+                                        [options]="{ prefix: '',precision:0,align:'left' }">
+                                </td>
+                                <td>
+                                    <input currencyMask class="input-table" [(ngModel)]="listProductsToBuy[i].buy_price" [options]="{ prefix: formNewBuy.get('coin')?.value+' ',
+                                             thousands: ',', decimal: '.',align:'left' }" />
+                                </td>
+                                <td>{{calcularSubtotal(product,i) |currency:formNewBuy.get('coin')?.value+' '}}</td>
+                                <td class="icon" (click)="openModalToDelete()">
+                                    <i class="fa fa-trash-can delete"></i>
+                                </td>
+                            </tr>
+                            <tr *ngIf="products.length>0">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><strong>Total</strong></td>
+                                <td>{{calcularTotal()|currency:formNewBuy.get('coin')?.value+' '}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="table-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>N°</th>
+                                <th>Código de barra</th>
+                                <th>Producto</th>
+                                <th>Fecha de vencimiento</th>
+                                <th>Precio de venta</th>
+                            </tr>
+                        </thead>
+
+                        <tbody #tab>
+                            <tr *ngFor="let product of products; let i=index">
+                                <td>{{i+1}}</td>
+                                <td>{{product.barcode}}</td>
+                                <td>{{product.name}}&nbsp;{{product.mark}}&nbsp;{{product.model}}&nbsp;</td>
+                                <td *ngIf="!product.can_expir">No vence</td>
+                                <td *ngIf="product.can_expir">
+                                    <input class="input-table" [(ngModel)]="product.expir" type="date"
+                                        min="{{date|date:'yyyy-MM-dd'}}">
+                                </td>
+                                <td> <input currencyMask class="input-table" [(ngModel)]="listProductsToBuy[i].sell_price" [options]="{ prefix: formNewBuy.get('coin')?.value+' ',
+                                         thousands: ',', decimal: '.',align:'left' }" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="right-container">
+        <h3>DATOS DE LA COMPRA</h3>
+        <div class="form" [formGroup]="formNewBuy">
+            <div class="form-group">
+                <div class="form-control" [ngClass]="{'input-on-focus':elementHasFocus[3]}">
+                    <label class="form-label label-on-focus-up" [ngStyle]="{'color':'#676d74'}">
+                        Fecha
+                    </label>
+                    <p>{{date|date:'dd/MM/yyyy'}}</p>
+                </div>
+
+                <div class="form-control">
+                    <label class="form-label" [ngClass]="{'label-on-focus-up':
+                    elementHasFocus[5]}" [ngStyle]="animationLabel(formNewBuy,'select')">
+                        Proveedor
+                        <i class="fab fa-font-awesome-alt"></i>
+                    </label>
+                    <select formControlName="provider"
+                     class="form-input" (focus)="isFocused(5,formNewBuy,'select')"
+                        (focusout)="isFocused(5,formNewBuy,'select')">
+                        <option value="" disabled selected>Seleccione un proveedor</option>
+                        <option *ngFor="let provider of providers" value="{{provider.id_provider}}">
+                            {{provider.name_provider}}</option>
+                    </select>
+                </div>
+                <div class="form-control">
+                    <label class="form-label" [ngClass]="{'label-on-focus-up':
+                    elementHasFocus[6]}" [ngStyle]="animationLabel(formNewBuy,'select')">
+                        seleccione la moneda
+                        <i class="fab fa-font-awesome-alt"></i>
+                    </label>
+                    <select formControlName="coin" id="" class="form-input"(change)=selectMoneda() (focus)="isFocused(6,formNewBuy,'select')"
+                        (focusout)="isFocused(6,formNewBuy,'select')">
+                        <option *ngFor="let coin of coins" value="{{coin.symbol}}">{{coin.name}}</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+        <div class="total">
+            <h4>Total</h4>
+            <p>{{calcularTotal()|currency:formNewBuy.get('coin')?.value+' '}}</p>
+
+        </div>
+        <button title="{{validarCompra().msj}}" class="form-button" 
+        [ngClass]="{'btn-save': validarCompra().isValid}" (click)="registrarCompra()">
+            <i class="far fa-save"></i>
+            &nbsp;&nbsp;ACEPTAR</button>
+
+    </div>
+    <dialog class="dialog" #popup>
+        <i class="fa-regular fa-circle-question"></i>
+        <h3>¿Estas seguro?</h3>
+        <p>Lois datos seran guardados en el sistema</p>
+        <div>
+            <button class="form-button btn-save" (click)="acept(0)">
+                &nbsp;&nbsp;ACEPTAR</button>
+            <button *ngIf="this.popUp?.nativeElement.children[1].textContent === '¿Estás seguro?'"
+                class="form-button btn-cancel" (click)="cancel(popUp)">
+                &nbsp;&nbsp;CANCELAR</button>
+        </div>
+    </dialog>
+    <dialog class=" list-product" #searchProducts>
+        <div class="container">
+            <div class="header">
+                <h2 class="title">Agregar Productos</h2>
+                <button class="btn-cerrar-dialog" (click)="cancel(search)">x</button>
+            </div>
+            <div class="scroll  table-container">
+                <div class="table-title">
+                    <h6>lista de productos</h6>
+
+                </div>
+                <div class="table-body">
+                    <div class="search-pagination" [formGroup]="tableSearch">
+                        <div class="dataTable-filter">
+                            <label>Buscar:
+                                <input formControlName="search" class="input-search dataTable-filter">
+                            </label>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>N°</th>
+                                    <th>código de barra</th>
+                                    <th>producto</th>
+                                    <th>Existentes</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                            <tbody #rows>
+                                <tr *ngFor="let product of listProducts| 
+                                tableFilter:{ search: tableSearch.get('search')?.value,pagination:false};let i=index">
+                                    <td>{{i+1}}</td>
+                                    <td>{{product.barcode}}</td>
+                                    <td>{{product.name}} {{product.mark}} {{product.model}}</td>
+                                    <td>{{product.exist_quantity}}</td>
+                                    <td class="icon icon-add-product" (click)="addQuantity(product)">
+                                        <i class="fas fa-plus-circle"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="search-pagination">
+                        <div class="dataTables_info" #dataTables_info>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </dialog>
+    <dialog #quantity class="quantity">
+        <div class="header">
+            <h2 class="title">Agregar cantidad del producto</h2>
+            <button class="btn-cerrar-dialog" (click)="cancel(quantityProduct)">x</button>
+        </div>
+        <div class="form" [formGroup]="formNewBuy">
+            <div class="form-control" [ngClass]="{'input-on-focus-success':verifyStyleInput(formNewBuy,'productQuantityBySearch')&&
+        elementHasFocus[7],'input-on-focus-fail':!verifyStyleInput(formNewBuy,'productQuantityBySearch')}">
+                <label class="form-label" [ngClass]="{'label-on-focus-down':
+elementHasFocus[7]&&positionLabel[7],
+'label-on-focus-up':
+elementHasFocus[7]&&!positionLabel[7]}" [ngStyle]="animationLabel(formNewBuy,
+'productQuantityBySearch')">
+                    Cantidad
+                </label>
+                <input formControlName="productQuantityBySearch"
+                    (focus)="isFocused(7,formNewBuy,'productQuantityBySearch')"
+                    (focusout)="isFocused(7,formNewBuy,'productQuantityBySearch')" class="form-input"
+                    [ngStyle]="styleForeground(formNewBuy,'productQuantityBySearch')"
+                    (keypress)="validate($event,false)">
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="form-button"
+                [ngClass]="{'btn-save':formNewBuy.get('productQuantityBySearch')?.value.length>0}"
+                (click)="addProductBySearch(product)">
+                &nbsp;&nbsp;ACEPTAR</button>
+            <button class="form-button btn-cancel" (click)="cancel(quantityProduct)">
+                &nbsp;&nbsp;CANCELAR</button>
+        </div>
+    </dialog>
