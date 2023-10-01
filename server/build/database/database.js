@@ -4,15 +4,10 @@ const pg_1 = require("pg");
 require('dotenv').config();
 const pool = new pg_1.Pool({
     user: process.env.USER,
-    host: 'localhost',
-    database: 'db_inventary',
+    host: process.env.HOST,
+    database: process.env.DATABASE,
     password: process.env.PASSWORD,
     port: 5432,
 });
-console.log(require('dotenv').config());
-console.log(process.env.USER);
-console.log(process.env.PASSWORD);
-console.log(process.env.HOST);
-console.log(process.env.DATABASE);
 console.log("DB conected");
 exports.default = pool;
